@@ -1,0 +1,26 @@
+apply plugin: 'kotlin'
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/kotlin'
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation project(':client')
+    implementation deps.kotlin
+    implementation deps.androidPlugin
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+jar {
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+}

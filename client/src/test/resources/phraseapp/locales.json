@@ -1,0 +1,50 @@
+[
+  {
+    "id": "a45eaf4f57ad2b51d228710d34ec43d2",
+    "name": "Default",
+    "code": "en",
+    "default": true,
+    "main": false,
+    "rtl": false,
+    "plural_forms": [
+      "zero",
+      "one",
+      "other"
+    ],
+    "created_at": "2017-04-10T09:05:53Z",
+    "updated_at": "2018-11-29T17:27:09Z",
+    "source_locale": null
+  },
+  {
+    "id": "8430898e9e9d7deb64979ac01d914041",
+    "name": "France",
+    "code": "fr-FR",
+    "default": false,
+    "main": false,
+    "rtl": false,
+    "plural_forms": [
+      "zero",
+      "one",
+      "other"
+    ],
+    "created_at": "2017-04-10T09:17:43Z",
+    "updated_at": "2019-01-23T15:28:17Z",
+    "source_locale": null
+  },
+  {
+    "id": "8400891e9e9dfdeb6d979ac01d9jd087",
+    "name": "Spain_es-ES",
+    "code": "en",
+    "default": false,
+    "main": false,
+    "rtl": false,
+    "plural_forms": [
+      "zero",
+      "one",
+      "other"
+    ],
+    "created_at": "2017-04-10T09:17:43Z",
+    "updated_at": "2019-01-23T15:28:17Z",
+    "source_locale": null
+  }
+]

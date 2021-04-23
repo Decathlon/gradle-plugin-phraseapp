@@ -1,0 +1,87 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+
+}
+
+buildscript {
+    ext.versions = [
+            'androidPlugin': '2.3.0',
+            'kotlin'       : '1.3.20',
+            'retrofit'     : '2.5.0',
+            'okhttp'       : '3.12.1',
+            'koxlim'       : '0.1.0',
+            'rxjava'       : '2.2.6',
+            'gson'         : '2.8.6',
+
+            'junit'        : '4.12',
+            'mockito'      : '2.1.0',
+            'assertk'      : '0.9'
+    ]
+
+    ext.deps = [
+            'androidPlugin': "com.android.tools.build:gradle:${versions.androidPlugin}",
+            'kotlin'       : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}",
+            'retrofit'     : [
+                    'core'  : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+                    'gson'  : "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
+                    'rxjava': "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}",
+            ],
+            'okhttp'       : [
+                    'core'   : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+                    'logging': "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+            ],
+            'rxjava'       : "io.reactivex.rxjava2:rxjava:${versions.rxjava}",
+            'junit'        : "junit:junit:${versions.junit}",
+            'mockito'      : "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito}",
+            'assertk'      : "com.willowtreeapps.assertk:assertk:${versions.assertk}",
+            'google' : [
+                    'gson' : "com.google.code.gson:gson:${versions.gson}"
+            ]
+    ]
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8"
+        classpath "org.jacoco:org.jacoco.core:0.8.6"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+    }
+}
+
+apply plugin: 'jacoco'
+apply plugin: "org.sonarqube"
+
+tasks.register("codeCoverageReport", JacocoReport) {
+    subprojects { subproject ->
+        subproject.plugins.withType(JacocoPlugin).configureEach {
+            subproject.tasks.matching({ t -> t.extensions.findByType(JacocoTaskExtension) }).configureEach { testTask ->
+                sourceSets subproject.sourceSets.main
+                executionData(testTask)
+            }
+
+            subproject.tasks.matching({ t -> t.extensions.findByType(JacocoTaskExtension) }).forEach {
+                rootProject.tasks.codeCoverageReport.dependsOn(it)
+            }
+        }
+    }
+
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "Decathlon_gradle-plugin-phraseapp"
+        property "sonar.organization", "decathlon"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.coverage.jacoco.xmlReportPaths", "$rootDir/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml"
+        property "sonar.login", System.getenv("SONAR_TOKEN") ?: SONAR_TOKEN
+        property "sonar.debug", true
+    }
+}

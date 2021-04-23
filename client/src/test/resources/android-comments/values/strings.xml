@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        [ACCOUNT FORM] For CO country : Cedula.
+        Type : Label
+    -->
+    <string name="hello">Hello %s!</string>
+    <!--Dynamic creation account - title for surname field -->
+    <plurals name="numberOfSongsAvailable">
+        <!--
+            [ACCOUNT FORM] For CO country : Cedula.
+            Type : Label
+        -->
+        <item quantity="one">%d song found.</item>
+        <!--Dynamic creation account - title for surname field -->
+        <item quantity="other">%d songs found.</item>
+    </plurals>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello % s!</string>
+    <plurals name="numberOfSongsAvailable">
+        <item quantity="one">
+            % d song found.
+            % d songs found.
+        </item>
+    </plurals>
+</resources>

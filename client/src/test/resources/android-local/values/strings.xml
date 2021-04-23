@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello!</string>
+    <string name="world">World!</string>
+    <plurals name="worlds">
+        <item quantity="one">Hello World!</item>
+        <item quantity="other">Hello Worlds!</item>
+    </plurals>
+</resources>

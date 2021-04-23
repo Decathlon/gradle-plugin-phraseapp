@@ -1,0 +1,39 @@
+apply plugin: 'jacoco'
+apply plugin: 'kotlin'
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/kotlin'
+}
+
+dependencies {
+    api deps.kotlin
+    api deps.okhttp.core
+    api deps.okhttp.logging
+    api deps.retrofit.core
+    api deps.retrofit.gson
+    api deps.retrofit.rxjava
+    api deps.rxjava
+    api deps.google.gson
+
+    testImplementation deps.junit
+    testImplementation deps.mockito
+    testImplementation deps.assertk
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+jar {
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+}
+
+jacoco {
+    toolVersion = '0.8.6'
+}
