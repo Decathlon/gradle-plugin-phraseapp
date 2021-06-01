@@ -9,7 +9,6 @@ dependencies {
     implementation gradleApi()
     implementation project(':client')
     implementation deps.kotlin
-    implementation deps.androidPlugin
 }
 
 compileKotlin {
