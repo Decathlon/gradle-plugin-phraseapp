@@ -85,7 +85,18 @@ phraseapp {
 
 ## Download
 
-Will be published on Maven Central soon!
+```kotlin
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.decathlon.phrase:phrase-gradle-plugin:1.0.0")
+    }
+}
+```
+
+Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
 
 ## License
 
@@ -102,3 +113,5 @@ Will be published on Maven Central soon!
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+[snap]: https://oss.sonatype.org/content/repositories/snapshots/com/decathlon/phrase/
