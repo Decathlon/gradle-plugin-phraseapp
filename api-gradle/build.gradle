@@ -1,4 +1,5 @@
 apply plugin: 'kotlin'
+apply plugin: 'com.vanniktech.maven.publish'
 
 sourceSets {
     main.kotlin.srcDirs += 'src/main/kotlin'
