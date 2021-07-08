@@ -15,7 +15,7 @@ const val DEFAULT_REGEX = ".+_([a-z]{2}-[A-Z]{2})"
 const val DEFAULT_PLACEHOLDER = false
 val DEFAULT_EXCEPTIONS: Map<String, String> = emptyMap()
 const val DEFAULT_OVERRIDE_DEFAULT_FILE = false
-const val PHRASEAPP_BASEURL = "https://api.phraseapp.com/api/"
+const val PHRASEAPP_BASEURL = "https://api.phrase.com/api/"
 
 data class LocaleContent(val content: String, val isDefault: Boolean)
 
