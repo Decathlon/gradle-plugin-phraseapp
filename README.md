@@ -19,7 +19,7 @@ the execution of the parameters with optional parameters.
 ### Mandatory
 
 ```groovy
-apply plugin: 'com.decathlon.android.phraseapp'
+apply plugin: 'com.decathlon.phraseapp'
 
 phraseapp {
     // Authentication token used to communicate with PhraseApp.

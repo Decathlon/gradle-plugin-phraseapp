@@ -2,6 +2,7 @@ package phraseapp
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
@@ -22,7 +23,7 @@ abstract class DownloadTask : DefaultTask() {
     abstract val projectId: Property<String>
 
     @get:Input
-    abstract val resFolders: Property<Map<String, List<String>>>
+    abstract val resFolders: MapProperty<String, List<String>>
 
     @get:Input
     abstract val platform: Property<Platform>
@@ -37,7 +38,7 @@ abstract class DownloadTask : DefaultTask() {
     abstract val overrideDefaultFile: Property<Boolean>
 
     @get:Input
-    abstract val exceptions: Property<Map<String, String>>
+    abstract val exceptions: MapProperty<String, String>
 
     @get:Input
     abstract val placeholder: Property<Boolean>

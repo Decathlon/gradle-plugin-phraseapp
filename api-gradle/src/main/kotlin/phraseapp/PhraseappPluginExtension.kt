@@ -1,5 +1,7 @@
 package phraseapp
 
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import phraseapp.internal.Platform
 import phraseapp.network.*
@@ -32,12 +34,12 @@ abstract class PhraseappPluginExtension {
      * folder, you can use `resFoldersMultiStrings` property.
      * @see resFoldersMultiStrings
      */
-    abstract val resFolders: Property<List<String>>
+    abstract val resFolders: ListProperty<String>
     /**
      * Target location to get print all translations from PhraseApp
      * and to fetch default strings files in all resource folders.
      */
-    abstract val resFoldersMultiStrings: Property<Map<String, List<String>>>
+    abstract val resFoldersMultiStrings: MapProperty<String, List<String>>
     /**
      * Generate the output adapted to the platform.
      */
@@ -65,7 +67,7 @@ abstract class PhraseappPluginExtension {
      * If you want to convert a PhraseApp locale to your custom locale, add it into this map.
      * For example: ['zh-CN': 'zh-Hans']
      */
-    abstract val exceptions: Property<Map<String, String>>
+    abstract val exceptions: MapProperty<String, String>
     /**
      * If you want to convert all placeholder into your platform's placeholder, switch this
      * parameter to true. Default: false.
