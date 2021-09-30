@@ -1,26 +1,29 @@
-apply plugin: 'kotlin'
-apply plugin: 'com.vanniktech.maven.publish'
+plugins {
+    id "java-gradle-plugin"
+    id "kotlin"
+    id "com.vanniktech.maven.publish"
+}
 
 sourceSets {
-    main.kotlin.srcDirs += 'src/main/kotlin'
+    main.kotlin.srcDirs += "src/main/kotlin"
 }
 
 dependencies {
-    implementation gradleApi()
-    implementation project(':client')
-    implementation deps.kotlin
+    implementation(deps.kotlin)
+    implementation(project(":client"))
 }
 
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
-jar {
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives jar
+gradlePlugin {
+    plugins {
+        phrasePlugin {
+            id = "com.decathlon.phraseapp"
+            implementationClass = "phraseapp.PhraseAppPlugin"
+        }
+    }
 }

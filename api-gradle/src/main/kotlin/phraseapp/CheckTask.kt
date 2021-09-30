@@ -2,22 +2,30 @@ package phraseapp
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import phraseapp.internal.platforms.Platform
 import phraseapp.repositories.checks.CheckRepository
 
-open class CheckTask : DefaultTask() {
-    lateinit var baseUrl: String
-    lateinit var platform: Platform
-    lateinit var authToken: String
-    lateinit var projectId: String
-    lateinit var localeNameRegex: String
-    lateinit var output: String
+abstract class CheckTask : DefaultTask() {
+    @get:Input
+    abstract val baseUrl: Property<String>
+    @get:Input
+    abstract val platform: Property<Platform>
+    @get:Input
+    abstract val authToken: Property<String>
+    @get:Input
+    abstract val projectId: Property<String>
+    @get:Input
+    abstract val localeNameRegex: Property<String>
+    @get:Input
+    abstract val output: Property<String>
 
     @TaskAction
     fun action() {
         var throwable: Throwable? = null
-        val repository = CheckRepository.newInstance(baseUrl, output, localeNameRegex, authToken, projectId, platform)
+        val repository = CheckRepository.newInstance(baseUrl.get(), output.get(), localeNameRegex.get(), authToken.get(), projectId.get(), platform.get())
         repository.check().subscribe({
             logger.info("You don't have any error in your translations!")
         }, {
