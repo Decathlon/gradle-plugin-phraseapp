@@ -59,14 +59,15 @@ class PhraseAppPlugin : Plugin<Project> {
 
     private fun Project.getResFolders(phraseapp: PhraseappPluginExtension): Map<String, List<String>> = when {
         phraseapp.resFoldersMultiStrings.get().isNotEmpty() -> phraseapp.resFoldersMultiStrings.get()
-        phraseapp.resFolders.get().isNotEmpty() -> phraseapp.resFolders.get().associateWith {
-            when (phraseapp.platform.get().toNewPlatform()) {
-                is Flutter -> arrayListOf("strings_en.arb")
-                else -> arrayListOf("strings.xml")
+        phraseapp.resFolders.get().isNotEmpty() -> phraseapp.resFolders.get()
+            .map { "${projectDir.absolutePath}/$it" }
+            .associateWith {
+                when (phraseapp.platform.get().toNewPlatform()) {
+                    is Flutter -> arrayListOf("strings_en.arb")
+                    else -> arrayListOf("strings.xml")
+                }
             }
-
-        }
-        else -> arrayListOf(phraseapp.resFolder)
+        else -> arrayListOf(phraseapp.resFolder.get())
                 .map { "${projectDir.absolutePath}/$it" }
                 .associateWith {
                     when (phraseapp.platform.get().toNewPlatform()) {
