@@ -1,10 +1,15 @@
 package phraseapp
 
+import org.gradle.api.Action
+import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import phraseapp.internal.Platform
 import phraseapp.network.*
+
+fun Project.phraseapp(configure: Action<PhraseappPluginExtension>): Unit
+    = extensions.configure("phraseapp", configure)
 
 abstract class PhraseappPluginExtension {
     /**
