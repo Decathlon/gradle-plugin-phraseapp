@@ -1,29 +1,31 @@
-apply plugin: 'jacoco'
-apply plugin: 'kotlin'
-apply plugin: 'com.vanniktech.maven.publish'
+plugins {
+    id "kotlin"
+    id "jacoco"
+    id "com.vanniktech.maven.publish"
+}
 
 sourceSets {
-    main.kotlin.srcDirs += 'src/main/kotlin'
+    main.kotlin.srcDirs += "src/main/kotlin"
 }
 
 dependencies {
-    api deps.kotlin
-    api deps.okhttp.core
-    api deps.okhttp.logging
-    api deps.retrofit.core
-    api deps.retrofit.gson
-    api deps.retrofit.rxjava
-    api deps.rxjava
-    api deps.google.gson
+    api(deps.kotlin)
+    api(deps.okhttp.core)
+    api(deps.okhttp.logging)
+    api(deps.retrofit.core)
+    api(deps.retrofit.gson)
+    api(deps.retrofit.rxjava)
+    api(deps.rxjava)
+    api(deps.google.gson)
 
-    testImplementation deps.junit
-    testImplementation deps.mockito
-    testImplementation deps.assertk
+    testImplementation(deps.junit)
+    testImplementation(deps.mockito)
+    testImplementation(deps.assertk)
 }
 
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 

@@ -2,6 +2,8 @@ package phraseapp
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import phraseapp.internal.platforms.Platform
 import phraseapp.internal.printers.FileOperation
@@ -9,21 +11,28 @@ import phraseapp.internal.printers.FileOperationImpl
 import phraseapp.network.PhraseAppNetworkDataSource
 import phraseapp.repositories.operations.Uploader
 
-open class UploadTask : DefaultTask() {
-    lateinit var baseUrl: String
-    lateinit var authToken: String
-    lateinit var projectId: String
-    lateinit var resFolders: Map<String, List<String>>
-    lateinit var platform: Platform
-    lateinit var output: String
-    lateinit var mainLocaleId: String
+abstract class UploadTask : DefaultTask() {
+    @get:Input
+    abstract val baseUrl: Property<String>
+    @get:Input
+    abstract val authToken: Property<String>
+    @get:Input
+    abstract val projectId: Property<String>
+    @get:Input
+    abstract val resFolders: Property<Map<String, List<String>>>
+    @get:Input
+    abstract val platform: Property<Platform>
+    @get:Input
+    abstract val output: Property<String>
+    @get:Input
+    abstract val mainLocaleId: Property<String>
 
     @TaskAction
     fun upload() {
         var throwable: Throwable? = null
-        val network = PhraseAppNetworkDataSource.newInstance(baseUrl, authToken, projectId, platform.format)
+        val network = PhraseAppNetworkDataSource.newInstance(baseUrl.get(), authToken.get(), projectId.get(), platform.get().format)
         val fileOperation: FileOperation = FileOperationImpl()
-        Uploader(platform, output, fileOperation, network).upload(mainLocaleId, resFolders).subscribe({
+        Uploader(platform.get(), output.get(), fileOperation, network).upload(mainLocaleId.get(), resFolders.get()).subscribe({
             logger.info("All string have been uploaded!")
         }, {
             throwable = it

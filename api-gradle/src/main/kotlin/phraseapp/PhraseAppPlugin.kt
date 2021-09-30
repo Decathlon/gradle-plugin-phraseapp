@@ -2,15 +2,11 @@ package phraseapp
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.ProjectConfigurationException
 import phraseapp.internal.platforms.Flutter
 import java.io.File
 
 class PhraseAppPlugin : Plugin<Project> {
-    override fun apply(project: Project?) {
-        if (project == null) {
-            throw ProjectConfigurationException("The plugin can't be applied to your project.", Throwable())
-        }
+    override fun apply(project: Project) {
         project.run {
             extensions.create("phraseapp", PhraseappPluginExtension::class.java)
             afterEvaluate {
@@ -19,52 +15,52 @@ class PhraseAppPlugin : Plugin<Project> {
                 val targetResFolders = getResFolders(phraseapp)
 
                 tasks.create("phraseappDownload", DownloadTask::class.java).run {
-                    baseUrl = phraseapp.phraseappBaseUrl
-                    projectId = phraseapp.projectId
-                    authToken = phraseapp.authToken
-                    resFolders = targetResFolders
-                    platform = phraseapp.platform.toNewPlatform()
-                    output = phraseapp.outputLocation ?: defaultOutput
-                    overrideDefaultFile = phraseapp.overrideDefaultFile
-                    exceptions = phraseapp.exceptions
-                    placeholder = phraseapp.placeholder
-                    localeNameRegex = phraseapp.localeNameRegex
+                    baseUrl.set(phraseapp.phraseappBaseUrl.get())
+                    projectId.set(phraseapp.projectId.get())
+                    authToken.set(phraseapp.authToken.get())
+                    resFolders.set(targetResFolders)
+                    platform.set(phraseapp.platform.get().toNewPlatform())
+                    output.set(phraseapp.outputLocation.getOrElse(defaultOutput))
+                    overrideDefaultFile.set(phraseapp.overrideDefaultFile.get())
+                    exceptions.set(phraseapp.exceptions.get())
+                    placeholder.set(phraseapp.placeholder.get())
+                    localeNameRegex.set(phraseapp.localeNameRegex.get())
                     description = "Download translations from the source set to PhraseApp"
                 }
 
                 tasks.create("phraseappUpload", UploadTask::class.java).run {
-                    baseUrl = phraseapp.phraseappBaseUrl
-                    projectId = phraseapp.projectId
-                    authToken = phraseapp.authToken
-                    mainLocaleId = phraseapp.mainLocaleId!!
-                    platform = phraseapp.platform.toNewPlatform()
-                    output = defaultOutput
-                    resFolders = targetResFolders
+                    baseUrl.set(phraseapp.phraseappBaseUrl.get())
+                    projectId.set(phraseapp.projectId.get())
+                    authToken.set(phraseapp.authToken.get())
+                    mainLocaleId.set(phraseapp.mainLocaleId.getOrElse(""))
+                    platform.set(phraseapp.platform.get().toNewPlatform())
+                    output.set(defaultOutput)
+                    resFolders.set(targetResFolders)
                     description = "Upload default string file from the source set to PhraseApp"
                 }
 
                 tasks.create("phraseappClean", ClearTranslationsTask::class.java).run {
-                    platform = phraseapp.platform.toNewPlatform()
-                    resFolders = targetResFolders
+                    platform.set(phraseapp.platform.get().toNewPlatform())
+                    resFolders.set(targetResFolders)
                     description = "Clear all translations files in the target project"
                 }
 
                 tasks.create("phraseappCheck", CheckTask::class.java).run {
-                    baseUrl = phraseapp.phraseappBaseUrl
-                    platform = phraseapp.platform.toNewPlatform()
-                    projectId = phraseapp.projectId
-                    authToken = phraseapp.authToken
-                    localeNameRegex = phraseapp.localeNameRegex
-                    output = defaultOutput
+                    baseUrl.set(phraseapp.phraseappBaseUrl)
+                    platform.set(phraseapp.platform.get().toNewPlatform())
+                    projectId.set(phraseapp.projectId)
+                    authToken.set(phraseapp.authToken)
+                    localeNameRegex.set(phraseapp.localeNameRegex)
+                    output.set(defaultOutput)
                 }
             }
         }
     }
 
     private fun Project.getResFolders(phraseapp: PhraseappPluginExtension): Map<String, List<String>> = when {
-        phraseapp.resFoldersMultiStrings.isNotEmpty() -> phraseapp.resFoldersMultiStrings
-        phraseapp.resFolders.isNotEmpty() -> phraseapp.resFolders.associateWith {
-            when (phraseapp.platform.toNewPlatform()) {
+        phraseapp.resFoldersMultiStrings.get().isNotEmpty() -> phraseapp.resFoldersMultiStrings.get()
+        phraseapp.resFolders.get().isNotEmpty() -> phraseapp.resFolders.get().associateWith {
+            when (phraseapp.platform.get().toNewPlatform()) {
                 is Flutter -> arrayListOf("strings_en.arb")
                 else -> arrayListOf("strings.xml")
             }
@@ -73,7 +69,7 @@ class PhraseAppPlugin : Plugin<Project> {
         else -> arrayListOf(phraseapp.resFolder)
                 .map { "${projectDir.absolutePath}/$it" }
                 .associateWith {
-                    when (phraseapp.platform.toNewPlatform()) {
+                    when (phraseapp.platform.get().toNewPlatform()) {
                         is Flutter -> arrayListOf("strings_en.arb")
                         else -> arrayListOf("strings.xml")
                     }
