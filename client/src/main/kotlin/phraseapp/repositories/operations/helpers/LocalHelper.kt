@@ -25,8 +25,8 @@ class LocalHelper(val platform: Platform) {
      * @return Map with the res folder as key and the merge of all strings file in one XML DSL as value.
      */
     fun getStringsFileByResFolder(resFolders: Map<String, List<String>>): Map<String, ResourceTranslation> = resFolders
-            .map { it.key to getStringsFile(it.key, it.value) }
-            .toMap()
+        .map { it.key to getStringsFile(it.key, it.value) }
+        .toMap()
 
     /**
      * Get XML DSL for all strings files in one resource folder.
@@ -34,11 +34,9 @@ class LocalHelper(val platform: Platform) {
      */
     private fun getStringsFile(resFolder: String, filenames: List<String>): ResourceTranslation {
         val resources: List<ResourceTranslation> = filenames
-                .map { getResFolderFile(resFolder, it, DefaultType) }
-                .map {
-                    it.readText().parse(it)
-                }
-                .toList()
+            .map { getResFolderFile(resFolder, it, DefaultType) }
+            .map { it.readText().parse(it) }
+            .toList()
         return mergeResourceTranslations(resources)
     }
 
@@ -63,9 +61,9 @@ class LocalHelper(val platform: Platform) {
             arrays.addAll(it.arrays)
         }
         return ResourceTranslation(
-                strings.toList().distinctBy { it.key },
-                plurals.toList().distinctBy { it.key },
-                arrays.toList().distinctBy { it.key }
+            strings.toList().distinctBy { it.key },
+            plurals.toList().distinctBy { it.key },
+            arrays.toList().distinctBy { it.key }
         )
     }
 }

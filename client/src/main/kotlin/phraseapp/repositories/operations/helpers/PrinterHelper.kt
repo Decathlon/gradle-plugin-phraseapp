@@ -14,8 +14,12 @@ import phraseapp.repositories.operations.LocaleType
 import phraseapp.repositories.operations.ResFolderType
 import java.io.File
 
-class PrinterHelper(val platform: Platform, val buildDir: String, val fileOperation: FileOperation = FileOperationImpl()) {
-    val tempStringFilePath: String = if(platform is Flutter) {
+class PrinterHelper(
+    val platform: Platform,
+    val buildDir: String,
+    val fileOperation: FileOperation = FileOperationImpl()
+) {
+    val tempStringFilePath: String = if (platform is Flutter) {
         "$buildDir${File.separator}string.xml"
     } else {
         "$buildDir${File.separator}${platform.defaultStringsFile}"
@@ -27,7 +31,7 @@ class PrinterHelper(val platform: Platform, val buildDir: String, val fileOperat
      * Print a strings file who will be used for the upload to Phraseapp.
      */
     fun printTempStringsFile(resource: Resource) {
-        when(platform) {
+        when (platform) {
             is Flutter -> printResource(tempStringFilePath, resource, true)
             else -> printResource(tempStringFilePath, resource)
         }
@@ -44,10 +48,10 @@ class PrinterHelper(val platform: Platform, val buildDir: String, val fileOperat
      * Build map with all countries in key and all languages for each country.
      */
     private fun getLocales(types: List<ResFolderType>): Map<String, List<String>> = types
-            .filterIsInstance<LocaleType>()
-            .map { it.country.toUpperCase() to it.language.toLowerCase() }
-            .distinct()
-            .associateWithList()
+        .filterIsInstance<LocaleType>()
+        .map { it.country.uppercase() to it.language.lowercase() }
+        .distinct()
+        .associateWithList()
 
     /**
      * Print all resources in all paths.
@@ -64,15 +68,16 @@ class PrinterHelper(val platform: Platform, val buildDir: String, val fileOperat
      * Build the path from res folder path and its type and print the resource at this target path.
      */
     private fun printResourceByType(resFolder: String, type: ResFolderType, resource: Resource) {
-        val path = "$resFolder${File.separator}${platform.getResPath(type)}${File.separator}${platform.getFilename(type)}"
+        val path =
+            "$resFolder${File.separator}${platform.getResPath(type)}${File.separator}${platform.getFilename(type)}"
         printResource(path, resource)
     }
 
     /**
      * Print resource on the target path.
      */
-    private fun printResource(targetPath: String, resource: Resource, forceXMLPrinter : Boolean = false) {
-        val content = if(forceXMLPrinter) {
+    private fun printResource(targetPath: String, resource: Resource, forceXMLPrinter: Boolean = false) {
+        val content = if (forceXMLPrinter) {
             XmlPrinterScanner().start(resource)
         } else {
             when (platform.printer) {

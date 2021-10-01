@@ -9,14 +9,13 @@ sourceSets {
 }
 
 dependencies {
-    api(deps.kotlin)
-    api(deps.okhttp.core)
-    api(deps.okhttp.logging)
-    api(deps.retrofit.core)
-    api(deps.retrofit.gson)
-    api(deps.retrofit.rxjava)
-    api(deps.rxjava)
-    api(deps.google.gson)
+    api(deps.kotlin.stdlib)
+    api(deps.kotlin.coroutines)
+    implementation(deps.okhttp.core)
+    implementation(deps.okhttp.logging)
+    implementation(deps.retrofit.core)
+    implementation(deps.retrofit.gson)
+    implementation(deps.google.gson)
 
     testImplementation(deps.junit)
     testImplementation(deps.mockito)
@@ -28,6 +27,15 @@ compileKotlin {
         jvmTarget = "11"
     }
 }
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 jar {
     from sourceSets.main.allSource

@@ -1,5 +1,6 @@
 package phraseapp
 
+import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.provider.MapProperty
@@ -13,19 +14,18 @@ import phraseapp.repositories.operations.Cleaner
 abstract class ClearTranslationsTask : DefaultTask() {
     @get:Input
     abstract val platform: Property<Platform>
+
     @get:Input
     abstract val resFolders: MapProperty<String, List<String>>
 
     @TaskAction
-    fun clear() {
-        var throwable: Throwable? = null
-        Cleaner(platform.get(), FileOperationImpl()).clean(resFolders.get()).subscribe({
+    fun clear() = runBlocking {
+        try {
+            Cleaner(platform.get(), FileOperationImpl())
+                .clean(resFolders.get())
             logger.info("All resources have been deleted!")
-        }, {
-            throwable = it
-        })
-        if (throwable != null) {
-            throw GradleException("Something wrong happened during the cleaning...", throwable!!)
+        } catch (error: Throwable) {
+            throw GradleException("Something wrong happened during the cleaning...", error)
         }
     }
 }

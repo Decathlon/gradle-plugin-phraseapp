@@ -51,7 +51,7 @@ ${context.items.joinToString("\n")}
         val context = exit() as StringContext
 
         val value = string.value
-                .replace("|1<", "|1&lt;")
+            .replace("|1<", "|1&lt;")
         when (parentContext) {
             is ResourceContext -> parentContext.items.add("""${context.comment}${context.tabs()}<string name="${string.key}">$value</string>""")
             is PluralsContext -> parentContext.items.add("""${context.comment}${context.tabs()}<item quantity="${string.key}">$value</item>""")
@@ -67,9 +67,11 @@ ${context.items.joinToString("\n")}
         val context = exit() as StringsArrayContext
 
         when (val parentContext = contexts.peek()) {
-            is ResourceContext -> parentContext.items.add("""${context.comment}${context.tabs()}<string-array name="${stringsArray.key}">
+            is ResourceContext -> parentContext.items.add(
+                """${context.comment}${context.tabs()}<string-array name="${stringsArray.key}">
 ${context.items.joinToString("\n")}
-${context.tabs()}</string-array>""")
+${context.tabs()}</string-array>"""
+            )
             else -> TODO()
         }
     }
@@ -81,9 +83,11 @@ ${context.tabs()}</string-array>""")
         val context = exit() as PluralsContext
 
         when (val parentContext = contexts.peek()) {
-            is ResourceContext -> parentContext.items.add("""${context.comment}${context.tabs()}<plurals name="${plural.key}">
+            is ResourceContext -> parentContext.items.add(
+                """${context.comment}${context.tabs()}<plurals name="${plural.key}">
 ${context.items.joinToString("\n")}
-${context.tabs()}</plurals>""")
+${context.tabs()}</plurals>"""
+            )
             else -> TODO()
         }
     }
@@ -106,7 +110,7 @@ ${parentContext.tabs()}-->
 
 class ArbPrinterScanner : Visitor {
     private val contexts = Stack<Context>()
-    private var dateStr : String? = null
+    private var dateStr: String? = null
 
     fun start(resource: Resource): String {
         enter(ResultContext(""))
@@ -151,9 +155,9 @@ ${items.joinToString(",\n")}
         val context = exit() as StringContext
 
         val value = string.value
-                .replace("|1<", "|1&lt;")
-                .replace("\\'", "'")
-                .replace("\"", "\\\"")
+            .replace("|1<", "|1&lt;")
+            .replace("\\'", "'")
+            .replace("\"", "\\\"")
         when (parentContext) {
             is ResourceContext -> parentContext.items.add("""${context.comment}${context.tabs()}"${string.key}":"$value"""")
             else -> TODO()
@@ -176,8 +180,8 @@ ${items.joinToString(",\n")}
         return
     }
 
-    fun getDate() :String {
-        if(dateStr == null) {
+    fun getDate(): String {
+        if (dateStr == null) {
             val date = Date()
             val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssSSS")
             dateStr = simpleDateFormat.format(date)
@@ -200,9 +204,14 @@ class ResourceContext(val items: MutableList<String> = arrayListOf()) : Context 
 }
 
 class StringContext(override val level: Int = 1, var comment: String = "") : Context
-class StringsArrayContext(override val level: Int = 1, val items: MutableList<String> = arrayListOf(), var comment: String = "") : Context
+class StringsArrayContext(
+    override val level: Int = 1,
+    val items: MutableList<String> = arrayListOf(),
+    var comment: String = ""
+) : Context
+
 class PluralsContext(
-        override val level: Int = 1,
-        val items: MutableList<String> = arrayListOf(),
-        var comment: String = ""
+    override val level: Int = 1,
+    val items: MutableList<String> = arrayListOf(),
+    var comment: String = ""
 ) : Context

@@ -34,8 +34,8 @@ object Android : Platform() {
 
     override fun getResPath(type: ResFolderType): String = when (type) {
         is DefaultType -> "values"
-        is LanguageType -> "values-${type.language.toLowerCase()}"
-        is LocaleType -> "values-${type.language.toLowerCase()}-r${type.country.toUpperCase()}"
+        is LanguageType -> "values-${type.language.lowercase()}"
+        is LocaleType -> "values-${type.language.lowercase()}-r${type.country.uppercase()}"
     }
 
     override fun getStringsFilesExceptDefault(resFolder: String): List<File> {
@@ -65,8 +65,8 @@ object iOS : Platform() {
 
     override fun getResPath(type: ResFolderType): String = when (type) {
         is DefaultType -> "Base.lproj"
-        is LanguageType -> "${type.language.toLowerCase()}.lproj"
-        is LocaleType -> "${type.language.toLowerCase()}-${type.country.toUpperCase()}.lproj"
+        is LanguageType -> "${type.language.lowercase()}.lproj"
+        is LocaleType -> "${type.language.lowercase()}-${type.country.uppercase()}.lproj"
     }
 
     override fun getStringsFilesExceptDefault(resFolder: String): List<File> {
@@ -93,10 +93,10 @@ object Flutter : Platform() {
     override fun getFilename(type: ResFolderType): String = when (type) {
         is DefaultType -> defaultStringsFile
         is LanguageType -> {
-            "strings_${type.language.toLowerCase()}.arb"
+            "strings_${type.language.lowercase()}.arb"
         }
         is LocaleType -> {
-            "strings_${type.language.toLowerCase()}_${type.country.toUpperCase()}.arb"
+            "strings_${type.language.lowercase()}_${type.country.uppercase()}.arb"
         }
     }
 
@@ -110,10 +110,6 @@ object Flutter : Platform() {
             if (name == defaultStringsFile) return@listFiles false
             return@listFiles true
         } ?: return emptyList()
-
-
-        return listFiles.map {
-            File("${it.absolutePath}")
-        }
+        return listFiles.map { File(it.absolutePath) }
     }
 }

@@ -13,7 +13,7 @@ internal class NodeList(private val list: NodeList?) : Iterable<Node> {
             private var currentIndex = 0
 
             override fun hasNext(): Boolean =
-                    currentIndex < currentSize && list!![currentIndex] != null
+                currentIndex < currentSize && list!![currentIndex] != null
 
             override fun next(): Node = list!![currentIndex++]!!
         }

@@ -22,7 +22,7 @@ val Node.childs: List<Node>
 fun Node.isComment(): Boolean = nodeType == Element.COMMENT_NODE
 fun Node.isText(): Boolean = nodeType == Element.TEXT_NODE
 fun Node.isArray(): Boolean =
-        nodeType == Element.ELEMENT_NODE && childNodes != null && childNodes.length > 0
+    nodeType == Element.ELEMENT_NODE && childNodes != null && childNodes.length > 0
 
 fun Node.isElement(): Boolean =
-        nodeType == Element.ELEMENT_NODE && (childNodes == null || (childNodes.length == 1 && childNodes.item(0).isText()))
+    nodeType == Element.ELEMENT_NODE && (childNodes == null || (childNodes.length == 1 && childNodes.item(0).isText()))
