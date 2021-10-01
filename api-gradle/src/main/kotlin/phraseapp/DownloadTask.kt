@@ -1,5 +1,6 @@
 package phraseapp
 
+import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.provider.MapProperty
@@ -50,31 +51,26 @@ abstract class DownloadTask : DefaultTask() {
     }
 
     @TaskAction
-    fun download() {
-        var throwable: Throwable? = null
-        val network = PhraseAppNetworkDataSource.newInstance(
-            baseUrl.get(),
-            authToken.get(),
-            projectId.get(),
-            platform.get().format
-        )
-        val fileOperation: FileOperation = FileOperationImpl()
-
-        Downloader(platform.get(), output.get(), fileOperation, network)
-            .download(
-                resFolders.get(),
-                overrideDefaultFile.get(),
-                exceptions.get(),
-                placeholder.get(),
-                localeNameRegex.get()
+    fun download() = runBlocking {
+        try {
+            val network = PhraseAppNetworkDataSource.newInstance(
+                baseUrl.get(),
+                authToken.get(),
+                projectId.get(),
+                platform.get().format
             )
-            .subscribe({
-                logger.info("All resources have been printed!")
-            }, {
-                throwable = it
-            })
-        if (throwable != null) {
-            throw GradleException("Something wrong happened during the downloading", throwable!!)
+            val fileOperation: FileOperation = FileOperationImpl()
+            Downloader(platform.get(), output.get(), fileOperation, network)
+                .download(
+                    resFolders.get(),
+                    overrideDefaultFile.get(),
+                    exceptions.get(),
+                    placeholder.get(),
+                    localeNameRegex.get()
+                )
+            logger.info("All resources have been printed!")
+        } catch (error: Throwable) {
+            throw GradleException("Something wrong happened during the downloading", error)
         }
     }
 }

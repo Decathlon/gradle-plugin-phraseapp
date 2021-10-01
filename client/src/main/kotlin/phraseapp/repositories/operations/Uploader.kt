@@ -1,7 +1,6 @@
 package phraseapp.repositories.operations
 
-import io.reactivex.Completable
-import io.reactivex.Single
+import kotlinx.coroutines.coroutineScope
 import phraseapp.internal.platforms.Platform
 import phraseapp.internal.printers.FileOperation
 import phraseapp.network.PhraseAppNetworkDataSource
@@ -12,10 +11,9 @@ class Uploader(platform: Platform, buildDir: String, fileOperation: FileOperatio
     private val localHelper = LocalHelper(platform)
     private val printerHelper = PrinterHelper(platform, buildDir, fileOperation)
 
-    fun upload(localeId: String, resFolders: Map<String, List<String>>): Completable {
-        return Single.just(localeId).doOnSuccess {
-            val stringsFile = localHelper.mergeStringsFilesByResFolder(resFolders)
-            printerHelper.printTempStringsFile(stringsFile.toResource())
-        }.flatMapCompletable { network.upload(localeId, printerHelper.tempStringFilePath) }
+    suspend fun upload(localeId: String, resFolders: Map<String, List<String>>) = coroutineScope {
+        val stringsFile = localHelper.mergeStringsFilesByResFolder(resFolders)
+        printerHelper.printTempStringsFile(stringsFile.toResource())
+        return@coroutineScope network.upload(localeId, printerHelper.tempStringFilePath)
     }
 }

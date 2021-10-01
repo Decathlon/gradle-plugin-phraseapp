@@ -9,8 +9,9 @@ allprojects {
 buildscript {
     ext.versions = [
             'kotlin'       : '1.5.31',
-            'retrofit'     : '2.5.0',
-            'okhttp'       : '3.12.1',
+            'coroutine'    : '1.5.2',
+            'retrofit'     : '2.9.0',
+            'okhttp'       : '4.9.1',
             'rxjava'       : '2.2.6',
             'gson'         : '2.8.6',
 
@@ -20,7 +21,10 @@ buildscript {
     ]
 
     ext.deps = [
-            'kotlin'       : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}",
+            'kotlin'       : [
+                    'stdlib': "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}",
+                    'coroutines': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutine}"
+            ],
             'retrofit'     : [
                     'core'  : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
                     'gson'  : "com.squareup.retrofit2:converter-gson:${versions.retrofit}",

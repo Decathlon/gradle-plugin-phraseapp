@@ -1,5 +1,6 @@
 package phraseapp.repositories.checks.strategies
 
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import phraseapp.extensions.parse
@@ -9,17 +10,12 @@ import java.io.File
 
 class PlaceholderStrategyTest {
     @Test
-    fun shouldDetectWhenThereIsMalFormedPlaceHolders() {
+    fun shouldDetectWhenThereIsMalFormedPlaceHolders() = runBlocking {
         val default = File("src/test/resources/android-errors/values/strings.xml").readText().parse(Android.format)
         val target = File("src/test/resources/android-errors/values-fr-rFR/strings.xml").readText().parse(Android.format)
 
         val strategy = PlaceholderStrategy()
         val errors = strategy.apply(default, target)
-                .test()
-                .assertNoErrors()
-                .values()
-                .first()
-
         assertEquals(2, errors.size)
         assertEquals("hello", errors[0].key)
         assertEquals(CheckType.PLACEHOLDER, errors[0].type)
@@ -28,17 +24,12 @@ class PlaceholderStrategyTest {
     }
 
     @Test
-    fun shouldNotDetectPlaceHolderErrorWhenThereIsNoPlaceHolderError() {
+    fun shouldNotDetectPlaceHolderErrorWhenThereIsNoPlaceHolderError() = runBlocking {
         val default = File("src/test/resources/android-local/values/strings.xml").readText().parse(Android.format)
         val target = File("src/test/resources/android-local/values-es-rES/strings.xml").readText().parse(Android.format)
 
         val strategy = PlaceholderStrategy()
         val errors = strategy.apply(default, target)
-                .test()
-                .assertNoErrors()
-                .values()
-                .first()
-
         assertEquals(0, errors.size)
     }
 }

@@ -1,29 +1,31 @@
 package phraseapp.repositories.checks.strategies
 
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.functions.BiFunction
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import phraseapp.extensions.ResourceTranslation
 import phraseapp.repositories.checks.CheckTranslation
 import phraseapp.repositories.checks.CheckType
 
 class PlaceholderStrategy : Strategy {
-    override fun apply(defaultContent: ResourceTranslation, targetContent: ResourceTranslation): Single<List<CheckTranslation>> {
-        val strings = Observable.just(defaultContent, targetContent).toList().flatMap {
-            val list = arrayListOf<CheckTranslation>()
+    override suspend fun apply(
+        defaultContent: ResourceTranslation, targetContent: ResourceTranslation
+    ): List<CheckTranslation> = coroutineScope {
+        val strings = async {
+            val strings = arrayListOf<CheckTranslation>()
             defaultContent.strings.forEach { default ->
                 val defaultPlaceHolderCount = default.value.countPlaceHolder()
                 if (defaultPlaceHolderCount > 0) {
                     val equivalent = targetContent.strings.firstOrNull { it.key == default.key }
                     if (equivalent != null && equivalent.value.countPlaceHolder() != defaultPlaceHolderCount) {
-                        list.add(CheckTranslation(equivalent.key, CheckType.PLACEHOLDER))
+                        strings.add(CheckTranslation(equivalent.key, CheckType.PLACEHOLDER))
                     }
                 }
             }
-            return@flatMap Single.just(list)
+            return@async strings
         }
-        val plurals = Observable.just(defaultContent, targetContent).toList().flatMap {
-            val list = arrayListOf<CheckTranslation>()
+
+        val plurals = async {
+            val plurals = arrayListOf<CheckTranslation>()
             defaultContent.plurals.forEach { default ->
                 default.plurals.forEach { plural ->
                     val defaultPlaceHolderCount = plural.value.countPlaceHolder()
@@ -31,14 +33,15 @@ class PlaceholderStrategy : Strategy {
                         val pluralsEquivalent = targetContent.plurals.firstOrNull { it.key == default.key }
                         val pluralEquivalent = pluralsEquivalent?.plurals?.firstOrNull { it.key == plural.key }
                         if (pluralEquivalent != null && pluralEquivalent.value.countPlaceHolder() != defaultPlaceHolderCount) {
-                            list.add(CheckTranslation(pluralsEquivalent.key, CheckType.PLACEHOLDER))
+                            plurals.add(CheckTranslation(pluralsEquivalent.key, CheckType.PLACEHOLDER))
                         }
                     }
                 }
             }
-            return@flatMap Single.just(list)
+            return@async plurals
         }
-        return Single.zip(strings, plurals, BiFunction { stringsRes, pluralsRes -> stringsRes + pluralsRes })
+
+        return@coroutineScope strings.await() + plurals.await()
     }
 }
 
