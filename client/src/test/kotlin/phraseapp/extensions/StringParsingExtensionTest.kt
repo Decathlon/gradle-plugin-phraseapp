@@ -62,6 +62,7 @@ Type : Label
         assertEquals("Hey<br/><br/><b>Oh</b><br/><br/>Hey<b>Oh</b>", xmlObject.strings[0].value)
         assertEquals("<![CDATA[Blabla]]>", xmlObject.strings[1].value)
         assertEquals("Picking of {0,choice,1#1 article|1<{0} articles}", xmlObject.strings[2].value)
+        assertEquals("Click&amp;Collect &lt;", xmlObject.strings[3].value)
 
         val xmlPrinted = (Android.printer as XmlPrinterScanner).start(xmlObject.toResource())
         assertEquals(originalText, xmlPrinted)

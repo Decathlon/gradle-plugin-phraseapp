@@ -2,10 +2,7 @@ package phraseapp.extensions
 
 import com.google.gson.JsonParser
 import phraseapp.internal.xml.*
-import phraseapp.parsers.xml.XmlParser
-import phraseapp.parsers.xml.childs
-import phraseapp.parsers.xml.comment
-import phraseapp.parsers.xml.get
+import phraseapp.parsers.xml.*
 import java.io.File
 
 fun String.writeTo(outputTargetFile: String) {
@@ -34,8 +31,14 @@ fun String.parse(format: String): ResourceTranslation {
 
 private fun String.parseXML(): ResourceTranslation {
     val content = this
-            .replace("<!\\[CDATA\\[(.*)]]>".toRegex()) { "&lt;![CDATA[${it.groups[it.groups.size - 1]!!.value}]]&gt;" }
-            .replace("<(?!(/)?resources|(/)?string|(/)?plurals|(/)?string-array|(/)?item|\\?xml|!--)([^>]*)>".toRegex()) { "&lt;${it.groups[it.groups.size - 1]!!.value}&gt;" }
+        .replace("&amp;", "[[MARKER]]&amp;[[MARKER]]")
+        .replace("&lt;", "[[MARKER]]&lt;[[MARKER]]")
+        .replace("&gt;", "[[MARKER]]&gt;[[MARKER]]")
+        .replace("&quot;", "[[MARKER]]&quot;[[MARKER]]")
+        .replace("&apos;", "[[MARKER]]&apos;[[MARKER]]")
+        .replace(Regex("\\[\\[MARKER]]&lt;\\[\\[MARKER]](?=\\{[0-9]})"), "&lt;")
+        .replace("<!\\[CDATA\\[(.*)]]>".toRegex()) { "&lt;![CDATA[${it.groups[it.groups.size - 1]!!.value}]]&gt;" }
+        .replace("<(?!(/)?resources|(/)?string|(/)?plurals|(/)?string-array|(/)?item|\\?xml|!--)([^>]*)>".toRegex()) { "&lt;${it.groups[it.groups.size - 1]!!.value}&gt;" }
     val resources = try {
         XmlParser(xml = content).document["resources"][0]
     } catch (e: Throwable) {
@@ -44,8 +47,7 @@ private fun String.parseXML(): ResourceTranslation {
     val strings = resources.childs
             .filter { it.nodeName == "string" }
             .map {
-                StringTranslation(it.attributes["name"], it.textContent, CommentTranslation(it.comment
-                        ?: ""))
+                StringTranslation(it.attributes["name"], it.text, CommentTranslation(it.comment ?: ""))
             }
     val plurals = resources.childs.filter { it.nodeName == "plurals" }
             .map {
@@ -54,7 +56,7 @@ private fun String.parseXML(): ResourceTranslation {
                         it.childs.map { child ->
                             StringTranslation(
                                     child.attributes["quantity"],
-                                    child.textContent,
+                                    child.text,
                                     CommentTranslation(child.comment ?: "")
                             )
                         },
@@ -67,7 +69,7 @@ private fun String.parseXML(): ResourceTranslation {
                         it.attributes["name"],
                         it.childs.map { child ->
                             StringTranslation("",
-                                    child.textContent,
+                                    child.text,
                                     CommentTranslation(child.comment ?: "")
                             )
                         },

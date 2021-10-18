@@ -1,6 +1,7 @@
 package phraseapp.parsers.xml
 
 import org.w3c.dom.Document
+import org.xml.sax.InputSource
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 

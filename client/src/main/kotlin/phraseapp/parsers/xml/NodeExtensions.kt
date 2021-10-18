@@ -16,6 +16,14 @@ val Node.nodeComment: Node?
         }
     }
 
+val Node.text: String
+    get() = textContent
+        .replace("[[MARKER]]&[[MARKER]]", "&amp;")
+        .replace("[[MARKER]]<[[MARKER]]", "&lt;")
+        .replace("[[MARKER]]>[[MARKER]]", "&gt;")
+        .replace("[[MARKER]]\"[[MARKER]]", "&quot;")
+        .replace("[[MARKER]]'[[MARKER]]", "&apos;")
+
 val Node.childs: List<Node>
     get() = NodeList(childNodes).toList().filter { it.isElement() || it.isArray() }
 
