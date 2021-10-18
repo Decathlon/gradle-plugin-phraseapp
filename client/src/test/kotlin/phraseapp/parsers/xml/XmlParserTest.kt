@@ -56,4 +56,24 @@ class XmlParserTest {
         val string = document["resources"][0].childs[0]
         assertk.assert(string.comment).isEqualTo("Hello, World!")
     }
+
+    @Test
+    fun shouldHaveOnlyValidCharactersInValue() {
+        val xml = """
+<resources>
+    <string name="cnc">Click&amp;Collect</string>
+</resources>
+""".trimIndent()
+        val document = XmlParser(xml).document
+        val nodes = document["resources"]
+        assertk.assert(nodes.size).isEqualTo(expected = 1)
+
+        val resourcesNode = nodes[0]
+        assertk.assert(resourcesNode.isArray()).isTrue()
+        assertk.assert(resourcesNode.childs.size).isEqualTo(expected = 1)
+
+        val string = resourcesNode.childs[0]
+        assertk.assert(string.isElement()).isTrue()
+        assertk.assert(string.text).isEqualTo("Click&Collect")
+    }
 }

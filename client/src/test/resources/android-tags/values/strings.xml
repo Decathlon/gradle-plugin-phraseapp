@@ -3,4 +3,5 @@
 	<string name="key">Hey<br/><br/><b>Oh</b><br/><br/>Hey<b>Oh</b></string>
 	<string name="cdata"><![CDATA[Blabla]]></string>
 	<string name="choices">Picking of {0,choice,1#1 article|1&lt;{0} articles}</string>
+	<string name="forbidden">Click&amp;Collect &lt;</string>
 </resources>
