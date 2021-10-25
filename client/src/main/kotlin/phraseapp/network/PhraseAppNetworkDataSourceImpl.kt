@@ -1,8 +1,6 @@
 package phraseapp.network
 
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody.Companion.FORM
 import okhttp3.MultipartBody.Part
@@ -12,6 +10,9 @@ import java.io.File
 import java.util.regex.Pattern
 
 private class LocaleResponse(val locale: Locale, val content: String)
+
+const val CONCURRENT_LIMIT = 4
+const val THROTTLING_LIMIT = 500L
 
 class PhraseAppNetworkDataSourceImpl(
     private val token: String,
@@ -27,15 +28,11 @@ class PhraseAppNetworkDataSourceImpl(
         localeNameRegex: String
     ): Map<String, LocaleContent> = coroutineScope {
         val namePattern = Pattern.compile(localeNameRegex)
-        return@coroutineScope service.getLocales(token, projectId)
+        val locales = service.getLocales(token, projectId)
             .filter { it.isDefault.not() or overrideDefaultFile }
-            .map { locale ->
-                async {
-                    val file = service.download(token, projectId, locale.id, fileFormat, placeHolder)
-                    return@async LocaleResponse(locale, file.string())
-                }
-            }
-            .awaitAll()
+        val chunked = locales.chunked(CONCURRENT_LIMIT)
+        val localesResponse = iterative(chunked, THROTTLING_LIMIT, placeHolder)
+        return@coroutineScope localesResponse
             .associate {
                 val phraseAppLocale = it.locale
                 val matcher = namePattern.matcher(phraseAppLocale.name)
@@ -44,6 +41,28 @@ class PhraseAppNetworkDataSourceImpl(
                 val key = exceptions.getOrDefault(code, code)
                 key to LocaleContent(it.content, it.locale.isDefault)
             }
+    }
+
+    private suspend fun iterative(
+        list: List<List<Locale>>,
+        onePerMillis: Long,
+        placeHolder: Boolean
+    ) = coroutineScope<List<LocaleResponse>> {
+        val target = arrayListOf<LocaleResponse>()
+        for (item in list) {
+            target.addAll(
+                item
+                    .map { locale ->
+                        async {
+                            val file = service.download(token, projectId, locale.id, fileFormat, placeHolder)
+                            return@async LocaleResponse(locale, file.string())
+                        }
+                    }
+                    .awaitAll()
+            )
+            delay(onePerMillis)
+        }
+        return@coroutineScope target
     }
 
     override suspend fun upload(localeId: String, filePath: String) = coroutineScope {
