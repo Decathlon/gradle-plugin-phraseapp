@@ -4,37 +4,46 @@ interface Translation {
     fun accept(visitor: Visitor)
 }
 
-data class Resource(val strings: List<Translation>) : Translation {
+interface StringsTranslationNode: Translation {
+    val key: String
+    val comment: CommentTranslation
+    val translatable: Boolean
+}
+
+data class Resource(val strings: List<StringsTranslationNode>) : Translation {
     override fun accept(visitor: Visitor) {
         visitor.visit(this)
     }
 }
 
 data class StringTranslation(
-    val key: String,
+    override val key: String,
     val value: String,
-    val comment: CommentTranslation = CommentTranslation("")
-) : Translation {
+    override val comment: CommentTranslation = CommentTranslation(""),
+    override val translatable: Boolean = true
+) : StringsTranslationNode {
     override fun accept(visitor: Visitor) {
         visitor.visit(this)
     }
 }
 
 data class StringsArrayTranslation(
-    val key: String,
+    override val key: String,
     val values: List<StringTranslation>,
-    val comment: CommentTranslation = CommentTranslation("")
-) : Translation {
+    override val comment: CommentTranslation = CommentTranslation(""),
+    override val translatable: Boolean = true
+) : StringsTranslationNode {
     override fun accept(visitor: Visitor) {
         visitor.visit(this)
     }
 }
 
 data class PluralsTranslation(
-    val key: String,
+    override val key: String,
     val plurals: List<StringTranslation>,
-    val comment: CommentTranslation = CommentTranslation("")
-) : Translation {
+    override val comment: CommentTranslation = CommentTranslation(""),
+    override val translatable: Boolean = true
+) : StringsTranslationNode {
     override fun accept(visitor: Visitor) {
         visitor.visit(this)
     }

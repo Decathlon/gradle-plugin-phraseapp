@@ -32,7 +32,7 @@ class XmlPrinterScanner : Visitor {
 
     override fun visit(resource: Resource) {
         enter(ResourceContext())
-        scan(resource.strings)
+        scan(resource.strings.filter { it.translatable })
         val context = exit() as ResourceContext
 
         when (val parentContext = contexts.peek()) {
