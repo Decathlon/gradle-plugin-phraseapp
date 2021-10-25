@@ -45,37 +45,45 @@ private fun String.parseXML(): ResourceTranslation {
         throw e
     }
     val strings = resources.childs
-            .filter { it.nodeName == "string" }
-            .map {
-                StringTranslation(it.attributes["name"], it.text, CommentTranslation(it.comment ?: ""))
-            }
+        .filter { it.nodeName == "string" }
+        .map {
+            StringTranslation(
+                it.attributes["name"],
+                it.text,
+                CommentTranslation(it.comment ?: ""),
+                it.attributes.getOrElse("translatable", "true").toBoolean()
+            )
+        }
     val plurals = resources.childs.filter { it.nodeName == "plurals" }
-            .map {
-                return@map PluralsTranslation(
-                        it.attributes["name"],
-                        it.childs.map { child ->
-                            StringTranslation(
-                                    child.attributes["quantity"],
-                                    child.text,
-                                    CommentTranslation(child.comment ?: "")
-                            )
-                        },
-                        CommentTranslation(it.comment ?: "")
-                )
-            }
+        .map {
+            return@map PluralsTranslation(
+                it.attributes["name"],
+                it.childs.map { child ->
+                    StringTranslation(
+                        child.attributes["quantity"],
+                        child.text,
+                        CommentTranslation(child.comment ?: "")
+                    )
+                },
+                CommentTranslation(it.comment ?: ""),
+                it.attributes.getOrElse("translatable", "true").toBoolean()
+            )
+        }
     val arrays = resources.childs.filter { it.nodeName == "string-array" }
-            .map {
-                return@map StringsArrayTranslation(
-                        it.attributes["name"],
-                        it.childs.map { child ->
-                            StringTranslation("",
-                                    child.text,
-                                    CommentTranslation(child.comment ?: "")
-                            )
-                        },
-                        CommentTranslation(it.comment ?: "")
-                )
-            }
+        .map {
+            return@map StringsArrayTranslation(
+                it.attributes["name"],
+                it.childs.map { child ->
+                    StringTranslation(
+                        "",
+                        child.text,
+                        CommentTranslation(child.comment ?: "")
+                    )
+                },
+                CommentTranslation(it.comment ?: ""),
+                it.attributes.getOrElse("translatable", "true").toBoolean()
+            )
+        }
     return ResourceTranslation(strings, plurals, arrays)
 }
 
@@ -89,7 +97,11 @@ private fun String.parseArb(): ResourceTranslation {
     return ResourceTranslation(strings, emptyList(), emptyList())
 }
 
-data class ResourceTranslation(val strings: List<StringTranslation>, val plurals: List<PluralsTranslation>, val arrays: List<StringsArrayTranslation>) {
+data class ResourceTranslation(
+    val strings: List<StringTranslation>,
+    val plurals: List<PluralsTranslation>,
+    val arrays: List<StringsArrayTranslation>
+) {
     val keys: List<String>
         get() = strings.map { it.key } + plurals.map { it.key } + arrays.map { it.key }
 

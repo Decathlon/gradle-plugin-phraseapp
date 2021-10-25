@@ -80,6 +80,25 @@ class PrinterHelperTest {
         verify(fileOperation).print("src/test/resources/android/values/strings.xml", expected)
     }
 
+    @Test
+    fun testWhenTranslatableAttrIsSetToFalse() {
+        val fileOperation: FileOperation = mock()
+        val helper = PrinterHelper(Android, "build", fileOperation)
+        helper.printTempStringsFile(getResource("""
+<resources>
+	<string name="translatable">Should be send to Phrase!</string>
+	<string name="notTranslatable" translatable="false">Shouldn't be send to Phrase!</string>
+</resources>
+        """.trimIndent()))
+
+        val expected = """<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<string name="translatable">Should be send to Phrase!</string>
+</resources>
+""".trimIndent()
+        verify(fileOperation).print(helper.tempStringFilePath, expected)
+    }
+
     private fun getResource(content: String): Resource {
         val resource = content.parse(Android.format)
         return Resource(resource.strings + resource.plurals)
