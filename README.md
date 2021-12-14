@@ -19,6 +19,7 @@ the execution of the parameters with optional parameters.
 ### Mandatory
 
 **Kotlin**
+
 ```kotlin
 import phraseapp.phraseapp
 
@@ -68,6 +69,8 @@ phraseapp {
     )
 }
 ```
+
+**Groovy**
 
 ```groovy
 def resFolders = [:]
