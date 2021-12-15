@@ -18,7 +18,8 @@ jobs:
           settings-path: ${{ github.workspace }}
       - name: Retrieve version
         run: |
-          echo "VERSION_NAME=$(cat gradle.properties | grep -w "VERSION_NAME" | cut -d'=' -f2)" >> $GITHUB_ENV
+          firstDigit=$(cat gradle.properties | grep -w "VERSION_NAME" | cut -d'=' -f2 | head -c 1 | tr -d "\n\r")
+          echo "VERSION_NAME=$((firstDigit+1)).0.0-SNAPSHOT" >> $GITHUB_ENV
       - run: ./gradlew publish --no-daemon --no-parallel
         if: endsWith(env.VERSION_NAME, '-SNAPSHOT')
         env:
