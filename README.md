@@ -156,7 +156,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.decathlon.phrase:phrase-gradle-plugin:0.0.1")
+        classpath("com.decathlon.phrase:phrase-gradle-plugin:<last-version>")
     }
 }
 ```
