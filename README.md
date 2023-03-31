@@ -118,6 +118,10 @@ phraseapp {
 
     // If you want to omit translation comments imported by the download task. Default: false
     ignoreComments.set(false)
+
+    // If you want to import only some locales during the download task. Skip param to fetch all locales.
+    // For example: ['cs-CZ', 'fr-FR', 'de-DE']
+    allowedLocaleCodes.set(listOf("<locale_code>"))
 }
 ```
 
@@ -151,6 +155,10 @@ phraseapp {
 
     // If you want to omit translation comments imported by the download task. Default: false
     ignoreComments = false
+
+    // If you want to import only some locales during the download task. Skip param to fetch all locales.
+    // For example: ['cs-CZ', 'fr-FR', 'de-DE']
+    allowedLocaleCodes = ["<locale_code>"]
 }
 ```
 

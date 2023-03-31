@@ -26,10 +26,17 @@ class Downloader(
         exceptions: Map<String, String> = DEFAULT_EXCEPTIONS,
         placeholder: Boolean = DEFAULT_PLACEHOLDER,
         localeNameRegex: String = DEFAULT_REGEX,
-        ignoreComments: Boolean = DEFAULT_IGNORE_COMMENTS
+        ignoreComments: Boolean = DEFAULT_IGNORE_COMMENTS,
+        allowedLocaleCodes: List<String> = DEFAULT_ALLOWED_LOCALE_CODES
     ) = coroutineScope {
         val strings = localHelper.getStringsFileByResFolder(resFolders)
-        val locales = network.downloadAllLocales(overrideDefaultFile, exceptions, placeholder, localeNameRegex)
+        val locales = network.downloadAllLocales(
+            overrideDefaultFile,
+            exceptions,
+            placeholder,
+            localeNameRegex,
+            allowedLocaleCodes
+        )
         val resources = reducerHelper.reduceKeysForAllStringsFilesAndForAllLocales(strings, locales, ignoreComments)
         printerHelper.printResources(resources)
         printerHelper.printLocales(getTypes(resources))

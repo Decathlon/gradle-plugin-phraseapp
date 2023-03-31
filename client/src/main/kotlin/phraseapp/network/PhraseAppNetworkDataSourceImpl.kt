@@ -25,11 +25,15 @@ class PhraseAppNetworkDataSourceImpl(
         overrideDefaultFile: Boolean,
         exceptions: Map<String, String>,
         placeHolder: Boolean,
-        localeNameRegex: String
+        localeNameRegex: String,
+        allowedLocaleCodes: List<String>
     ): Map<String, LocaleContent> = coroutineScope {
         val namePattern = Pattern.compile(localeNameRegex)
         val locales = service.getLocales(token, projectId)
-            .filter { it.isDefault.not() or overrideDefaultFile }
+            .filter {
+                (it.isDefault.not() or overrideDefaultFile) &&
+                        (allowedLocaleCodes.isEmpty() || allowedLocaleCodes.contains(it.code))
+            }
         val chunked = locales.chunked(CONCURRENT_LIMIT)
         val localesResponse = iterative(chunked, THROTTLING_LIMIT, placeHolder)
         return@coroutineScope localesResponse

@@ -88,6 +88,11 @@ abstract class PhraseappPluginExtension {
      * If you want to omit comments in translation files. Default: false
      */
     abstract val ignoreComments: Property<Boolean>
+    /**
+     * If you want to import only some locales during the download task. Skip param to fetch all locales.
+     * For example: ['cs-CZ', 'fr-FR', 'de-DE']
+     */
+    abstract val allowedLocaleCodes: ListProperty<String>
 
     init {
         resFolder.convention("")
@@ -100,5 +105,6 @@ abstract class PhraseappPluginExtension {
         placeholder.convention(DEFAULT_PLACEHOLDER)
         localeNameRegex.convention(DEFAULT_REGEX)
         ignoreComments.convention(DEFAULT_IGNORE_COMMENTS)
+        allowedLocaleCodes.convention(DEFAULT_ALLOWED_LOCALE_CODES)
     }
 }
