@@ -18,7 +18,7 @@ class CheckRepositoryTest {
     @Test
     fun shouldGetFilePrintedInPhraseAppOutputsWhenThereAreErrorsInChecks() = runBlocking {
         val phraseAppNetworkDataSource: PhraseAppNetworkDataSource = mock {
-            `when`(it.downloadAllLocales(any(), any(), any(), any())).thenReturn(mapOf(
+            `when`(it.downloadAllLocales(any(), any(), any(), any(), any())).thenReturn(mapOf(
                 "en" to LocaleContent(File("src/test/resources/android-errors/values/strings.xml").readText(), true),
                 "fr-FR" to LocaleContent(File("src/test/resources/android-errors/values-fr-rFR/strings.xml").readText(), false),
                 "es-ES" to LocaleContent(File("src/test/resources/android-errors/values-es-rES/strings.xml").readText(), false)
@@ -44,7 +44,7 @@ es-ES :: PLACEHOLDER :: hello
     @Test
     fun shouldNotGetErrorsWhenThereIsNoErrorInStringsFiles() = runBlocking {
         val phraseAppNetworkDataSource: PhraseAppNetworkDataSource = mock {
-            `when`(it.downloadAllLocales(any(), any(), any(), any())).thenReturn(mapOf(
+            `when`(it.downloadAllLocales(any(), any(), any(), any(), any())).thenReturn(mapOf(
                 "en" to LocaleContent(File("src/test/resources/android-local/values/strings.xml").readText(), true),
                 "fr-FR" to LocaleContent(File("src/test/resources/android-local/values-fr/strings.xml").readText(), false),
                 "es-ES" to LocaleContent(File("src/test/resources/android-local/values-es-rES/strings.xml").readText(), false)
@@ -59,7 +59,7 @@ es-ES :: PLACEHOLDER :: hello
     @Test
     fun shouldNotGetErrorWhenThereAreMissingTranslations() = runBlocking {
         val phraseAppNetworkDataSource: PhraseAppNetworkDataSource = mock {
-            `when`(it.downloadAllLocales(any(), any(), any(), any())).thenReturn(mapOf(
+            `when`(it.downloadAllLocales(any(), any(), any(), any(), any())).thenReturn(mapOf(
                 "en" to LocaleContent(File("src/test/resources/android/values/strings.xml").readText(), true),
                 "fr-FR" to LocaleContent(File("src/test/resources/android/values-fr-rFR/strings.xml").readText(), false)
             ))

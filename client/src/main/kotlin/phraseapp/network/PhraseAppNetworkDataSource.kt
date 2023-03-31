@@ -12,6 +12,7 @@ const val DEFAULT_REGEX = ".+_([a-z]{2}-[A-Z]{2})"
 const val DEFAULT_PLACEHOLDER = false
 val DEFAULT_EXCEPTIONS: Map<String, String> = emptyMap()
 const val DEFAULT_OVERRIDE_DEFAULT_FILE = false
+val DEFAULT_ALLOWED_LOCALE_CODES: List<String> = emptyList()
 const val PHRASEAPP_BASEURL = "https://api.phrase.com/api/"
 
 data class LocaleContent(val content: String, val isDefault: Boolean)
@@ -21,7 +22,8 @@ interface PhraseAppNetworkDataSource {
         overrideDefaultFile: Boolean = DEFAULT_OVERRIDE_DEFAULT_FILE,
         exceptions: Map<String, String> = DEFAULT_EXCEPTIONS,
         placeHolder: Boolean = DEFAULT_PLACEHOLDER,
-        localeNameRegex: String = DEFAULT_REGEX
+        localeNameRegex: String = DEFAULT_REGEX,
+        allowedLocaleCodes: List<String> = DEFAULT_ALLOWED_LOCALE_CODES
     ): Map<String, LocaleContent>
 
     suspend fun upload(localeId: String, filePath: String)

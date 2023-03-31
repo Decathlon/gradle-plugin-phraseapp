@@ -63,6 +63,14 @@ class PhraseAppNetworkDataSourceTest {
     }
 
     @Test
+    fun shouldSkipLocaleWhenLocaleCodeNotAllowed() = runBlocking {
+        val networkDataSource = PhraseAppNetworkDataSourceImpl("", "", "", service)
+        val xmlContents = networkDataSource.downloadAllLocales(allowedLocaleCodes = listOf("fr-FR"))
+        assertEquals(1, xmlContents.size)
+        assertTrue(xmlContents.containsKey("fr-FR"))
+    }
+
+    @Test
     fun shouldRedirectLocaleToNewLocaleNameWhenItIsPresentInExceptionList() = runBlocking {
         val networkDataSource = PhraseAppNetworkDataSourceImpl("", "", "", service)
         val xmlContents = networkDataSource.downloadAllLocales(exceptions = mapOf("es-ES" to "ca-ES"))

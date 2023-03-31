@@ -3,6 +3,7 @@ package phraseapp
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -47,11 +48,15 @@ abstract class DownloadTask : DefaultTask() {
     @get:Input
     abstract val ignoreComments: Property<Boolean>
 
+    @get:Input
+    abstract val allowedLocaleCodes: ListProperty<String>
+
     init {
         overrideDefaultFile.convention(false)
         exceptions.convention(emptyMap())
         placeholder.convention(false)
         ignoreComments.convention(false)
+        allowedLocaleCodes.convention(emptyList())
     }
 
     @TaskAction
@@ -71,7 +76,8 @@ abstract class DownloadTask : DefaultTask() {
                     exceptions.get(),
                     placeholder.get(),
                     localeNameRegex.get(),
-                    ignoreComments.get()
+                    ignoreComments.get(),
+                    allowedLocaleCodes.get()
                 )
             logger.info("All resources have been printed!")
         } catch (error: Throwable) {
