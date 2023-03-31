@@ -5,6 +5,7 @@ import phraseapp.internal.platforms.Platform
 import phraseapp.internal.printers.FileOperation
 import phraseapp.internal.xml.Resource
 import phraseapp.network.*
+import phraseapp.parsers.xml.DEFAULT_IGNORE_COMMENTS
 import phraseapp.repositories.operations.helpers.LocalHelper
 import phraseapp.repositories.operations.helpers.PrinterHelper
 import phraseapp.repositories.operations.helpers.ReducerHelper
@@ -24,11 +25,12 @@ class Downloader(
         overrideDefaultFile: Boolean = DEFAULT_OVERRIDE_DEFAULT_FILE,
         exceptions: Map<String, String> = DEFAULT_EXCEPTIONS,
         placeholder: Boolean = DEFAULT_PLACEHOLDER,
-        localeNameRegex: String = DEFAULT_REGEX
+        localeNameRegex: String = DEFAULT_REGEX,
+        ignoreComments: Boolean = DEFAULT_IGNORE_COMMENTS
     ) = coroutineScope {
         val strings = localHelper.getStringsFileByResFolder(resFolders)
         val locales = network.downloadAllLocales(overrideDefaultFile, exceptions, placeholder, localeNameRegex)
-        val resources = reducerHelper.reduceKeysForAllStringsFilesAndForAllLocales(strings, locales)
+        val resources = reducerHelper.reduceKeysForAllStringsFilesAndForAllLocales(strings, locales, ignoreComments)
         printerHelper.printResources(resources)
         printerHelper.printLocales(getTypes(resources))
         return@coroutineScope resources

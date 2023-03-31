@@ -13,23 +13,23 @@ fun String.writeTo(outputTargetFile: String) {
     outputFile.writeText(text = this)
 }
 
-fun String.parse(file: File): ResourceTranslation {
+fun String.parse(file: File, ignoreComments: Boolean = false): ResourceTranslation {
     return if (file.absolutePath.contains(".arb")) {
         parseArb()
     } else {
-        parseXML()
+        parseXML(ignoreComments)
     }
 }
 
-fun String.parse(format: String): ResourceTranslation {
+fun String.parse(format: String, ignoreComments: Boolean = false): ResourceTranslation {
     return if (format.equals("arb")) {
         parseArb()
     } else {
-        parseXML()
+        parseXML(ignoreComments)
     }
 }
 
-private fun String.parseXML(): ResourceTranslation {
+private fun String.parseXML(ignoreComments: Boolean): ResourceTranslation {
     val content = this
         .replace("&amp;", "[[MARKER]]&amp;[[MARKER]]")
         .replace("&lt;", "[[MARKER]]&lt;[[MARKER]]")
@@ -40,7 +40,7 @@ private fun String.parseXML(): ResourceTranslation {
         .replace("<!\\[CDATA\\[(.*)]]>".toRegex()) { "&lt;![CDATA[${it.groups[it.groups.size - 1]!!.value}]]&gt;" }
         .replace("<(?!(/)?resources|(/)?string|(/)?plurals|(/)?string-array|(/)?item|\\?xml|!--)([^>]*)>".toRegex()) { "&lt;${it.groups[it.groups.size - 1]!!.value}&gt;" }
     val resources = try {
-        XmlParser(xml = content).document["resources"][0]
+        XmlParser(xml = content, ignoreComments).document["resources"][0]
     } catch (e: Throwable) {
         throw e
     }

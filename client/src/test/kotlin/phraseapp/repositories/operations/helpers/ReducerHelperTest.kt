@@ -28,8 +28,9 @@ class ReducerHelperTest {
     fun testWhenThereIsNoStringsInRemote() {
         val helper = ReducerHelper(Android)
         val strings = helper.reduceKeysForAllStringsFilesAndForAllLocales(
-                mapOf(createStringsFile("src/test/resources/android")),
-                mapOf(createLocaleContent("en", EMPTY))
+            mapOf(createStringsFile("src/test/resources/android")),
+            mapOf(createLocaleContent("en", EMPTY)),
+            false
         )
         assertEquals(1, strings.keys.size)
         assertTrue(strings.containsKey("src/test/resources/android"))
@@ -43,8 +44,9 @@ class ReducerHelperTest {
     fun testWhenThereAreMoreStringsInRemoteThanLocal() {
         val helper = ReducerHelper(Android)
         val strings = helper.reduceKeysForAllStringsFilesAndForAllLocales(
-                mapOf(createStringsFile("src/test/resources/android")),
-                mapOf(createLocaleContent("fr-FR", EXAMPLE_1))
+            mapOf(createStringsFile("src/test/resources/android")),
+            mapOf(createLocaleContent("fr-FR", EXAMPLE_1)),
+            false
         )
         assertEquals(1, strings.keys.size)
         assertTrue(strings.containsKey("src/test/resources/android"))
@@ -58,8 +60,12 @@ class ReducerHelperTest {
     fun testWhenThereAreMultipleResFolders() {
         val helper = ReducerHelper(Android)
         val strings = helper.reduceKeysForAllStringsFilesAndForAllLocales(
-                mapOf(createStringsFile("src/test/resources/android"), createStringsFile("src/test/resources/android-local")),
-                mapOf(createLocaleContent("fr-FR", EXAMPLE_1))
+            mapOf(
+                createStringsFile("src/test/resources/android"),
+                createStringsFile("src/test/resources/android-local")
+            ),
+            mapOf(createLocaleContent("fr-FR", EXAMPLE_1)),
+            false
         )
         assertEquals(2, strings.keys.size)
         assertTrue(strings.keys.contains("src/test/resources/android"))

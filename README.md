@@ -115,6 +115,9 @@ phraseapp {
 
     // If you want to specify your custom locale in the name of a PhraseApp locale, you can specify the regex of your PhraseApp locale name here. Default: .+_([a-z]{2}-[A-Z]{2})
     localeNameRegex.set("<string>")
+
+    // If you want to omit translation comments imported by the download task. Default: false
+    ignoreComments.set(false)
 }
 ```
 
@@ -145,6 +148,9 @@ phraseapp {
 
     // If you want to specify your custom locale in the name of a PhraseApp locale, you can specify the regex of your PhraseApp locale name here. Default: .+_([a-z]{2}-[A-Z]{2})
     localeNameRegex = "<string>"
+
+    // If you want to omit translation comments imported by the download task. Default: false
+    ignoreComments = false
 }
 ```
 

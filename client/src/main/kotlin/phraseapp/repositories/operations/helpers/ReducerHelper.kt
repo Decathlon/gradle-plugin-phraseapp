@@ -16,23 +16,30 @@ class ReducerHelper(val platform: Platform) {
      * @return Map with the target res folder as key and the reduced keys for all remote locales.
      */
     fun reduceKeysForAllStringsFilesAndForAllLocales(
-        strings: Map<String, ResourceTranslation>, remoteStrings: Map<String, LocaleContent>
+        strings: Map<String, ResourceTranslation>,
+        remoteStrings: Map<String, LocaleContent>,
+        ignoreComments: Boolean
     ): Map<String, Map<ResFolderType, Resource>> =
-        strings.map { it.key to reduceKeysForAllLocales(it.value, remoteStrings) }.toMap()
+        strings.map {
+            it.key to reduceKeysForAllLocales(it.value, remoteStrings, ignoreComments)
+        }.toMap()
 
     /**
      * Reduces keys for all remote locales.
      * @return Map with the res folder type as key and the resource with reduced keys as value.
      */
     private fun reduceKeysForAllLocales(
-        stringsFile: ResourceTranslation, remoteStrings: Map<String, LocaleContent>
+        stringsFile: ResourceTranslation,
+        remoteStrings: Map<String, LocaleContent>,
+        ignoreComments: Boolean
     ): Map<ResFolderType, Resource> {
         val keys: Set<String> = stringsFile.strings.map { it.key }.union(stringsFile.plurals.map { it.key })
         return remoteStrings.map {
             val type = if (it.value.isDefault) DefaultType
             else if (it.key.split("-").size > 1) LocaleType(it.key.split("-")[0], it.key.split("-")[1])
             else LanguageType(it.key)
-            return@map type to reduceKeys(keys, it.value)
+            val resource = it.value.content.parse(platform.format, ignoreComments)
+            return@map type to reduceKeys(keys, resource)
         }.toMap()
     }
 
@@ -40,8 +47,7 @@ class ReducerHelper(val platform: Platform) {
      * Reduce keys from content with keys by intersection.
      * @return Resource where we have all reduced keys.
      */
-    private fun reduceKeys(keys: Set<String>, content: LocaleContent): Resource {
-        val resource = content.content.parse(platform.format)
+    private fun reduceKeys(keys: Set<String>, resource: ResourceTranslation): Resource {
         val remoteKeys = resource.strings.map { it.key }.union(resource.plurals.map { it.key })
         val intersect = keys.intersect(remoteKeys)
         return Resource(

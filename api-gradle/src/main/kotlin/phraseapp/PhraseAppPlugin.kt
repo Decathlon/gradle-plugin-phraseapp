@@ -25,6 +25,7 @@ class PhraseAppPlugin : Plugin<Project> {
                     exceptions.set(phraseapp.exceptions.get())
                     placeholder.set(phraseapp.placeholder.get())
                     localeNameRegex.set(phraseapp.localeNameRegex.get())
+                    ignoreComments.set(phraseapp.ignoreComments.get())
                     description = "Download translations from the source set to PhraseApp"
                 }
 
