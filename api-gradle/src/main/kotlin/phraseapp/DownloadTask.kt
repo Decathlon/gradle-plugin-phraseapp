@@ -44,10 +44,14 @@ abstract class DownloadTask : DefaultTask() {
     @get:Input
     abstract val placeholder: Property<Boolean>
 
+    @get:Input
+    abstract val ignoreComments: Property<Boolean>
+
     init {
         overrideDefaultFile.convention(false)
         exceptions.convention(emptyMap())
         placeholder.convention(false)
+        ignoreComments.convention(false)
     }
 
     @TaskAction
@@ -66,7 +70,8 @@ abstract class DownloadTask : DefaultTask() {
                     overrideDefaultFile.get(),
                     exceptions.get(),
                     placeholder.get(),
-                    localeNameRegex.get()
+                    localeNameRegex.get(),
+                    ignoreComments.get()
                 )
             logger.info("All resources have been printed!")
         } catch (error: Throwable) {

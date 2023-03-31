@@ -7,6 +7,7 @@ import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import phraseapp.internal.Platform
 import phraseapp.network.*
+import phraseapp.parsers.xml.DEFAULT_IGNORE_COMMENTS
 
 fun Project.phraseapp(configure: Action<PhraseappPluginExtension>): Unit
     = extensions.configure("phraseapp", configure)
@@ -83,6 +84,10 @@ abstract class PhraseappPluginExtension {
      * specify the regex of your PhraseApp locale name here. Default: .+_([a-z]{2}-[A-Z]{2})
      */
     abstract val localeNameRegex: Property<String>
+    /**
+     * If you want to omit comments in translation files. Default: false
+     */
+    abstract val ignoreComments: Property<Boolean>
 
     init {
         resFolder.convention("")
@@ -94,5 +99,6 @@ abstract class PhraseappPluginExtension {
         exceptions.convention(DEFAULT_EXCEPTIONS)
         placeholder.convention(DEFAULT_PLACEHOLDER)
         localeNameRegex.convention(DEFAULT_REGEX)
+        ignoreComments.convention(DEFAULT_IGNORE_COMMENTS)
     }
 }

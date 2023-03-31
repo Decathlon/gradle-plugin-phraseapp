@@ -2,6 +2,7 @@ package phraseapp.parsers.xml
 
 import assertk.assertions.containsAll
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import org.junit.Test
 
@@ -55,6 +56,19 @@ class XmlParserTest {
         val document = XmlParser(xml).document
         val string = document["resources"][0].childs[0]
         assertk.assert(string.comment).isEqualTo("Hello, World!")
+    }
+
+    @Test
+    fun shouldNotGetCommentsIfIgnored() {
+        val xml = """
+<resources>
+    <!-- Hello, World! -->
+    <string name="hello">Hello, World!</string>
+</resources>
+""".trimIndent()
+        val document = XmlParser(xml, ignoreComments = true).document
+        val string = document["resources"][0].childs[0]
+        assertk.assert(string.comment).isNull()
     }
 
     @Test
