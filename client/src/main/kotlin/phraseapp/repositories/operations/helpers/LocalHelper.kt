@@ -24,9 +24,31 @@ class LocalHelper(val platform: Platform) {
      * Get one XML DSL for all strings files in all resource folders.
      * @return Map with the res folder as key and the merge of all strings file in one XML DSL as value.
      */
-    fun getStringsFileByResFolder(resFolders: Map<String, List<String>>): Map<String, ResourceTranslation> = resFolders
+    fun getStringsFileByResFolder(resFolders: Map<String, List<String>>)
+            : Map<String, ResourceTranslation> = resFolders
         .map { it.key to getStringsFile(it.key, it.value) }
         .toMap()
+
+    /**
+     * Get resource translations by resource folder without any merge.
+     * @return Map with the res folder as key and all strings file as value.
+     */
+    fun getResourceTranslationsByResFolder(
+        resFolders: Map<String, List<String>>
+    ): Map<String, List<ResourceTranslation>> =
+        resFolders.map { it.key to getResourceTranslationList(it.key, it.value) }.toMap()
+
+    /**
+     * Get resources list from filenames list.
+     * @return List of ResourceTranslation corresponding to the associated filename.
+     */
+    private fun getResourceTranslationList(
+        resFolder: String, filenames: List<String>
+    ): List<ResourceTranslation> =
+        filenames
+            .map { getResFolderFile(resFolder, it, DefaultType) }
+            .map { it.readText().parse(it) }
+            .toList()
 
     /**
      * Get XML DSL for all strings files in one resource folder.
@@ -55,11 +77,13 @@ class LocalHelper(val platform: Platform) {
         val strings = arrayListOf<StringTranslation>()
         val plurals = arrayListOf<PluralsTranslation>()
         val arrays = arrayListOf<StringsArrayTranslation>()
+
         resources.forEach {
             strings.addAll(it.strings)
             plurals.addAll(it.plurals)
             arrays.addAll(it.arrays)
         }
+
         return ResourceTranslation(
             strings.toList().distinctBy { it.key },
             plurals.toList().distinctBy { it.key },
