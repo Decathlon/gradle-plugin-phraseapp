@@ -47,6 +47,19 @@ class PhraseAppPlugin : Plugin<Project> {
                     description = "Clear all translations files in the target project"
                 }
 
+                tasks.create("DuplicateKeysCheckTask", DuplicateKeysCheckTask::class.java).run {
+                    platform.set(phraseapp.platform.get().toNewPlatform())
+                    resFolders.set(targetResFolders)
+
+                    description = "Check if there are duplicate keys on res folder"
+                }
+
+                tasks.create("phraseCheck").run {
+                    dependsOn("DuplicateKeysCheckTask")
+                    dependsOn("phraseappCheck")
+                }
+
+
                 tasks.create("phraseappCheck", CheckTask::class.java).run {
                     baseUrl.set(phraseapp.phraseappBaseUrl)
                     platform.set(phraseapp.platform.get().toNewPlatform())
@@ -69,13 +82,14 @@ class PhraseAppPlugin : Plugin<Project> {
                     else -> arrayListOf("strings.xml")
                 }
             }
+
         else -> arrayListOf(phraseapp.resFolder.get())
-                .map { "${projectDir.absolutePath}/$it" }
-                .associateWith {
-                    when (phraseapp.platform.get().toNewPlatform()) {
-                        is Flutter -> arrayListOf("strings_en.arb")
-                        else -> arrayListOf("strings.xml")
-                    }
+            .map { "${projectDir.absolutePath}/$it" }
+            .associateWith {
+                when (phraseapp.platform.get().toNewPlatform()) {
+                    is Flutter -> arrayListOf("strings_en.arb")
+                    else -> arrayListOf("strings.xml")
                 }
+            }
     }
 }

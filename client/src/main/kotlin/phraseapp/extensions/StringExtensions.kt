@@ -15,21 +15,21 @@ fun String.writeTo(outputTargetFile: String) {
 
 fun String.parse(file: File, ignoreComments: Boolean = false): ResourceTranslation {
     return if (file.absolutePath.contains(".arb")) {
-        parseArb()
+        parseArb(resFolder = file.absolutePath)
     } else {
-        parseXML(ignoreComments)
+        parseXML(ignoreComments = ignoreComments, resFolder = file.absolutePath)
     }
 }
 
 fun String.parse(format: String, ignoreComments: Boolean = false): ResourceTranslation {
     return if (format.equals("arb")) {
-        parseArb()
+        parseArb(resFolder = format)
     } else {
-        parseXML(ignoreComments)
+        parseXML(ignoreComments = ignoreComments, resFolder = format)
     }
 }
 
-private fun String.parseXML(ignoreComments: Boolean): ResourceTranslation {
+private fun String.parseXML(ignoreComments: Boolean, resFolder: String): ResourceTranslation {
     val content = this
         .replace("&amp;", "[[MARKER]]&amp;[[MARKER]]")
         .replace("&lt;", "[[MARKER]]&lt;[[MARKER]]")
@@ -40,7 +40,7 @@ private fun String.parseXML(ignoreComments: Boolean): ResourceTranslation {
         .replace("<!\\[CDATA\\[(.*)]]>".toRegex()) { "&lt;![CDATA[${it.groups[it.groups.size - 1]!!.value}]]&gt;" }
         .replace("<(?!(/)?resources|(/)?string|(/)?plurals|(/)?string-array|(/)?item|\\?xml|!--)([^>]*)>".toRegex()) { "&lt;${it.groups[it.groups.size - 1]!!.value}&gt;" }
     val resources = try {
-        XmlParser(xml = content, ignoreComments).document["resources"][0]
+        XmlParser(xml = content, ignoreComments = ignoreComments).document["resources"][0]
     } catch (e: Throwable) {
         throw e
     }
@@ -48,50 +48,55 @@ private fun String.parseXML(ignoreComments: Boolean): ResourceTranslation {
         .filter { it.nodeName == "string" }
         .map {
             StringTranslation(
-                it.attributes["name"],
-                it.text,
-                CommentTranslation(it.comment ?: ""),
-                it.attributes.getOrElse("translatable", "true").toBoolean()
+                key = it.attributes["name"],
+                value = it.text,
+                resFolder = resFolder,
+                comment = CommentTranslation(it.comment ?: ""),
+                translatable = it.attributes.getOrElse("translatable", "true").toBoolean()
             )
         }
     val plurals = resources.childs.filter { it.nodeName == "plurals" }
         .map {
             return@map PluralsTranslation(
-                it.attributes["name"],
-                it.childs.map { child ->
+                key = it.attributes["name"],
+                plurals = it.childs.map { child ->
                     StringTranslation(
-                        child.attributes["quantity"],
-                        child.text,
-                        CommentTranslation(child.comment ?: "")
+                        key = child.attributes["quantity"],
+                        value = child.text,
+                        resFolder = resFolder,
+                        comment = CommentTranslation(child.comment ?: "")
                     )
                 },
-                CommentTranslation(it.comment ?: ""),
-                it.attributes.getOrElse("translatable", "true").toBoolean()
+                resFolder = resFolder,
+                comment = CommentTranslation(it.comment ?: ""),
+                translatable = it.attributes.getOrElse("translatable", "true").toBoolean()
             )
         }
     val arrays = resources.childs.filter { it.nodeName == "string-array" }
         .map {
             return@map StringsArrayTranslation(
-                it.attributes["name"],
-                it.childs.map { child ->
+                key = it.attributes["name"],
+                values = it.childs.map { child ->
                     StringTranslation(
-                        "",
-                        child.text,
-                        CommentTranslation(child.comment ?: "")
+                        key = "",
+                        value = child.text,
+                        resFolder = resFolder,
+                        comment = CommentTranslation(child.comment ?: "")
                     )
                 },
-                CommentTranslation(it.comment ?: ""),
-                it.attributes.getOrElse("translatable", "true").toBoolean()
+                resFolder = resFolder,
+                comment = CommentTranslation(it.comment ?: ""),
+                translatable = it.attributes.getOrElse("translatable", "true").toBoolean()
             )
         }
     return ResourceTranslation(strings, plurals, arrays)
 }
 
-private fun String.parseArb(): ResourceTranslation {
+private fun String.parseArb(resFolder: String): ResourceTranslation {
     val strings = arrayListOf<StringTranslation>()
     for ((key, value) in JsonParser.parseString(this).asJsonObject.entrySet()) {
         if (key != "@@last_modified" && !key.startsWith("@")) {
-            strings.add(StringTranslation(key, value.asString))
+            strings.add(StringTranslation(key = key, value = value.asString, resFolder = resFolder))
         }
     }
     return ResourceTranslation(strings, emptyList(), emptyList())

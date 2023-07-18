@@ -7,11 +7,11 @@ class XmlPrinterScannerTest {
     @Test
     fun shouldGenerateXmlContentWithStringAndPlurals() {
         val resource = Resource(arrayListOf(
-                StringTranslation("test", "Test"),
+                StringTranslation("test", "Test", "test"),
                 PluralsTranslation("test", arrayListOf(
-                        StringTranslation("one", "%d song found."),
-                        StringTranslation("other", "%d songs found.")
-                ))
+                        StringTranslation("one", "%d song found.", "test"),
+                        StringTranslation("other", "%d songs found.", "test")
+                ), "test")
         ))
         val expected = """
 <?xml version="1.0" encoding="UTF-8"?>
@@ -29,9 +29,9 @@ class XmlPrinterScannerTest {
     @Test
     fun shouldGenerateXmlContentWithMultipleString() {
         val resource = Resource(arrayListOf(
-                StringTranslation("test", "Test"),
-                StringTranslation("one", "%d song found."),
-                StringTranslation("other", "%d songs found.")
+                StringTranslation("test", "Test", "test"),
+                StringTranslation("one", "%d song found.", "test"),
+                StringTranslation("other", "%d songs found.", "test")
         ))
         val expected = """
 <?xml version="1.0" encoding="UTF-8"?>
@@ -48,13 +48,13 @@ class XmlPrinterScannerTest {
     fun shouldGenerateXmlContentWithMultiplePlurals() {
         val resource = Resource(arrayListOf(
                 PluralsTranslation("test", arrayListOf(
-                        StringTranslation("one", "%d song found."),
-                        StringTranslation("other", "%d songs found.")
-                )),
+                        StringTranslation("one", "%d song found.", "test"),
+                        StringTranslation("other", "%d songs found.", "test")
+                ), "test"),
                 PluralsTranslation("test", arrayListOf(
-                        StringTranslation("one", "%d song found."),
-                        StringTranslation("other", "%d songs found.")
-                ))
+                        StringTranslation("one", "%d song found.", "test"),
+                        StringTranslation("other", "%d songs found.", "test")
+                ), "test")
         ))
         val expected = """
 <?xml version="1.0" encoding="UTF-8"?>
@@ -88,10 +88,10 @@ class XmlPrinterScannerTest {
     fun shouldGenerateXmlContentWithStringArray() {
         val resource = Resource(arrayListOf(
                 StringsArrayTranslation("android", arrayListOf(
-                        StringTranslation("", "KitKat"),
-                        StringTranslation("", "Lollipop"),
-                        StringTranslation("", "Marshmallow")
-                ))
+                        StringTranslation("", "KitKat", "test"),
+                        StringTranslation("", "Lollipop", "test"),
+                        StringTranslation("", "Marshmallow", "test")
+                ), "test")
         ))
         val expected = """
 <?xml version="1.0" encoding="UTF-8"?>
