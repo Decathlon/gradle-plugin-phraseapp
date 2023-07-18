@@ -10,7 +10,7 @@ class ArbPrinterScannerTest {
     @Test
     fun shouldGenerateArbContentWithString() {
         val resource = Resource(arrayListOf(
-                StringTranslation("test", "Test")
+                StringTranslation("test", "Test", "test")
         ))
         val printer = ArbPrinterScanner()
         val result = printer.start(resource)
@@ -25,8 +25,8 @@ class ArbPrinterScannerTest {
     @Test
     fun shouldGenerateArbContentWithMultipleString() {
         val resource = Resource(arrayListOf(
-                StringTranslation("test", "Test"),
-                StringTranslation("one", "One")
+                StringTranslation("test", "Test", "test"),
+                StringTranslation("one", "One", "test")
         ))
         val printer = ArbPrinterScanner()
         val result = printer.start(resource)

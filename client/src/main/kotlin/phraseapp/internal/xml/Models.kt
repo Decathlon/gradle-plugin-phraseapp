@@ -4,10 +4,11 @@ interface Translation {
     fun accept(visitor: Visitor)
 }
 
-interface StringsTranslationNode: Translation {
+interface StringsTranslationNode : Translation {
     val key: String
     val comment: CommentTranslation
     val translatable: Boolean
+    val resFolder: String
 }
 
 data class Resource(val strings: List<StringsTranslationNode>) : Translation {
@@ -19,6 +20,7 @@ data class Resource(val strings: List<StringsTranslationNode>) : Translation {
 data class StringTranslation(
     override val key: String,
     val value: String,
+    override val resFolder: String,
     override val comment: CommentTranslation = CommentTranslation(""),
     override val translatable: Boolean = true
 ) : StringsTranslationNode {
@@ -30,6 +32,7 @@ data class StringTranslation(
 data class StringsArrayTranslation(
     override val key: String,
     val values: List<StringTranslation>,
+    override val resFolder: String,
     override val comment: CommentTranslation = CommentTranslation(""),
     override val translatable: Boolean = true
 ) : StringsTranslationNode {
@@ -41,6 +44,7 @@ data class StringsArrayTranslation(
 data class PluralsTranslation(
     override val key: String,
     val plurals: List<StringTranslation>,
+    override val resFolder: String,
     override val comment: CommentTranslation = CommentTranslation(""),
     override val translatable: Boolean = true
 ) : StringsTranslationNode {
