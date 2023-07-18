@@ -8,16 +8,19 @@ allprojects {
 
 buildscript {
     ext.versions = [
-            'kotlin'       : '1.5.31',
+            'kotlin'       : '1.8.0',
             'coroutine'    : '1.5.2',
             'retrofit'     : '2.9.0',
             'okhttp'       : '4.9.1',
             'rxjava'       : '2.2.6',
             'gson'         : '2.8.6',
+            'maven'        : '0.25.1',
 
             'junit'        : '4.12',
             'mockito'      : '2.1.0',
-            'assertk'      : '0.9'
+            'assertk'      : '0.9',
+            'jacoco'       : '0.8.6',
+            'sonarqube'    : '2.8'
     ]
 
     ext.deps = [
@@ -46,10 +49,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8"
-        classpath "org.jacoco:org.jacoco.core:0.8.6"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${versions.sonarqube}"
+        classpath "org.jacoco:org.jacoco.core:${versions.jacoco}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.15.1'
+        classpath "com.vanniktech:gradle-maven-publish-plugin:${versions.maven}"
     }
 }
 
