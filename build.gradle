@@ -7,52 +7,14 @@ allprojects {
 }
 
 buildscript {
-    ext.versions = [
-            'kotlin'       : '1.8.0',
-            'coroutine'    : '1.5.2',
-            'retrofit'     : '2.9.0',
-            'okhttp'       : '4.9.1',
-            'rxjava'       : '2.2.6',
-            'gson'         : '2.8.6',
-            'maven'        : '0.25.1',
-
-            'junit'        : '4.12',
-            'mockito'      : '2.1.0',
-            'assertk'      : '0.9',
-            'jacoco'       : '0.8.6',
-            'sonarqube'    : '2.8'
-    ]
-
-    ext.deps = [
-            'kotlin'       : [
-                    'stdlib': "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}",
-                    'coroutines': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutine}"
-            ],
-            'retrofit'     : [
-                    'core'  : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
-                    'gson'  : "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
-                    'rxjava': "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}",
-            ],
-            'okhttp'       : [
-                    'core'   : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
-                    'logging': "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
-            ],
-            'rxjava'       : "io.reactivex.rxjava2:rxjava:${versions.rxjava}",
-            'junit'        : "junit:junit:${versions.junit}",
-            'mockito'      : "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito}",
-            'assertk'      : "com.willowtreeapps.assertk:assertk:${versions.assertk}",
-            'google' : [
-                    'gson' : "com.google.code.gson:gson:${versions.gson}"
-            ]
-    ]
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${versions.sonarqube}"
-        classpath "org.jacoco:org.jacoco.core:${versions.jacoco}"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-        classpath "com.vanniktech:gradle-maven-publish-plugin:${versions.maven}"
+        classpath(libs.sonarqube.gradle)
+        classpath(libs.jacoco.gradle)
+        classpath(libs.kotlin.gradle)
+        classpath(libs.vanniktech.maven.publish.gradle)
     }
 }
 

@@ -9,17 +9,17 @@ sourceSets {
 }
 
 dependencies {
-    api(deps.kotlin.stdlib)
-    api(deps.kotlin.coroutines)
-    implementation(deps.okhttp.core)
-    implementation(deps.okhttp.logging)
-    implementation(deps.retrofit.core)
-    implementation(deps.retrofit.gson)
-    implementation(deps.google.gson)
+    api(libs.kotlin.stdlib)
+    api(libs.kotlinx.coroutines)
 
-    testImplementation(deps.junit)
-    testImplementation(deps.mockito)
-    testImplementation(deps.assertk)
+    implementation(platform(libs.square.okhttp.bom))
+    implementation(libs.bundles.square.okhttp3)
+    implementation(libs.bundles.square.retrofit)
+    implementation(libs.google.gson)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.assertk)
+    testImplementation(libs.mockito.kotlin)
 }
 
 compileKotlin {
@@ -46,5 +46,5 @@ artifacts {
 }
 
 jacoco {
-    toolVersion = '0.8.6'
+    toolVersion = libs.versions.jacoco.get()
 }

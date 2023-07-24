@@ -1,10 +1,14 @@
 package phraseapp.repositories.operations
 
-import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.whenever
 import phraseapp.internal.platforms.Android
 import phraseapp.internal.printers.FileOperation
 import phraseapp.network.LocaleContent
@@ -14,12 +18,13 @@ import java.io.File
 class DownloaderTest {
     @Test
     fun shouldDownloadAllResourcesWhenWeAskItForMultiModules() = runBlocking {
-        val network: PhraseAppNetworkDataSource = mock {
-            `when`(it.downloadAllLocales()).thenReturn(mapOf(
+        val network: PhraseAppNetworkDataSource = mock()
+        whenever(network.downloadAllLocales()).thenReturn(
+            mapOf(
                 "fr-FR" to LocaleContent(File("src/test/resources/android-remote/values-fr-rFR/strings.xml").readText(), false),
                 "es-ES" to LocaleContent(File("src/test/resources/android-remote/values-es-rES/strings.xml").readText(), false)
-            ))
-        }
+            )
+        )
         val fileOperation: FileOperation = mock()
         val resFolders = mapOf(
                 "src/test/resources/android" to arrayListOf("strings.xml"),
