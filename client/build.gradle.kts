@@ -1,11 +1,10 @@
-plugins {
-    id "kotlin"
-    id "jacoco"
-    id "com.vanniktech.maven.publish"
-}
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-sourceSets {
-    main.kotlin.srcDirs += "src/main/kotlin"
+plugins {
+    id("kotlin")
+    id("jacoco")
+    id("com.vanniktech.maven.publish")
+    alias(libs.plugins.sonarqube.gradle)
 }
 
 dependencies {
@@ -22,27 +21,21 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
 }
 
-compileKotlin {
+tasks.withType<KotlinCompile>() {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 }
 
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "11"
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+sonar {
+    properties {
+        property("sonar.sources", "src")
     }
-}
-
-sourceCompatibility = '11'
-targetCompatibility = '11'
-
-jar {
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives jar
 }
 
 jacoco {
