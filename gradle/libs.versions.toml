@@ -1,0 +1,35 @@
+[versions]
+kotlin = "1.8.21"
+kotlinx-coroutines = "1.7.1"
+google-gson = "2.10.1"
+square-okhttp = "4.11.0"
+square-retrofit = "2.9.0"
+mockito-kotlin = "5.0.0"
+junit = "4.13.2"
+assertk = "0.9"
+vanniktech-maven-publish = "0.25.1"
+sonarqube = "3.0"
+jacoco = "0.8.7"
+
+[libraries]
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "google-gson" }
+square-okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "square-okhttp" }
+square-okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
+square-okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
+square-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "square-retrofit" }
+square-retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "square-retrofit" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
+vanniktech-maven-publish-gradle = { group = "com.vanniktech", name = "gradle-maven-publish-plugin", version.ref = "vanniktech-maven-publish" }
+sonarqube-gradle = { group = "org.sonarsource.scanner.gradle", name = "sonarqube-gradle-plugin", version.ref = "sonarqube" }
+jacoco-gradle = { group = "org.jacoco", name = "org.jacoco.core", version.ref = "jacoco" }
+
+[bundles]
+square-okhttp3 = ["square-okhttp", "square-okhttp-logging-interceptor"]
+square-retrofit = ["square-retrofit", "square-retrofit-converter-gson"]
+
+[plugins]

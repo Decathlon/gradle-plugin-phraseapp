@@ -1,8 +1,8 @@
 package phraseapp.repositories.operations.helpers
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import phraseapp.extensions.parse
 import phraseapp.internal.platforms.Android
 import phraseapp.internal.printers.FileOperation

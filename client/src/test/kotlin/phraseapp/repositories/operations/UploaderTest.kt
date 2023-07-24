@@ -1,10 +1,14 @@
 package phraseapp.repositories.operations
 
 import assertk.fail
-import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.whenever
 import phraseapp.internal.platforms.Android
 import phraseapp.network.PhraseAppNetworkDataSource
 import java.io.File
@@ -12,9 +16,8 @@ import java.io.File
 class UploaderTest {
     @Test
     fun shouldUploadXmlFileWithMultipleStringResources() = runBlocking {
-        val network: PhraseAppNetworkDataSource = mock {
-            `when`(it.upload(eq("localeId"), any())).thenReturn(Unit)
-        }
+        val network: PhraseAppNetworkDataSource = mock()
+        whenever(network.upload(eq("localeId"), any())).thenReturn(Unit)
         val resFolders = mapOf(
                 "src/test/resources/android" to arrayListOf("strings.xml"),
                 "src/test/resources/android-local" to arrayListOf("strings.xml")
