@@ -47,19 +47,6 @@ class PhraseAppPlugin : Plugin<Project> {
                     description = "Clear all translations files in the target project"
                 }
 
-                tasks.create("DuplicateKeysCheckTask", DuplicateKeysCheckTask::class.java).run {
-                    platform.set(phraseapp.platform.get().toNewPlatform())
-                    resFolders.set(targetResFolders)
-
-                    description = "Check if there are duplicate keys on res folder"
-                }
-
-                tasks.create("phraseCheck").run {
-                    dependsOn("DuplicateKeysCheckTask")
-                    dependsOn("phraseappCheck")
-                }
-
-
                 tasks.create("phraseappCheck", CheckTask::class.java).run {
                     baseUrl.set(phraseapp.phraseappBaseUrl)
                     platform.set(phraseapp.platform.get().toNewPlatform())
@@ -67,6 +54,45 @@ class PhraseAppPlugin : Plugin<Project> {
                     authToken.set(phraseapp.authToken)
                     localeNameRegex.set(phraseapp.localeNameRegex)
                     output.set(defaultOutput)
+
+                    description = "Deprecated: Use CheckTask instead. Check plurals and placeholder"
+                }
+
+                tasks.create("DuplicateKeysCheckTask", DuplicateKeysCheckTask::class.java).run {
+                    platform.set(phraseapp.platform.get().toNewPlatform())
+                    resFolders.set(targetResFolders)
+
+                    description = "Check if there are duplicate keys on res folder"
+                }
+
+                tasks.create("PluralsCheckTask", PluralsCheckTask::class.java).run {
+                    baseUrl.set(phraseapp.phraseappBaseUrl)
+                    platform.set(phraseapp.platform.get().toNewPlatform())
+                    projectId.set(phraseapp.projectId)
+                    authToken.set(phraseapp.authToken)
+                    localeNameRegex.set(phraseapp.localeNameRegex)
+                    output.set(defaultOutput)
+
+                    description = "Check plurals"
+                }
+
+                tasks.create("PlaceHolderCheckTask", PlaceHolderCheckTask::class.java).run {
+                    baseUrl.set(phraseapp.phraseappBaseUrl)
+                    platform.set(phraseapp.platform.get().toNewPlatform())
+                    projectId.set(phraseapp.projectId)
+                    authToken.set(phraseapp.authToken)
+                    localeNameRegex.set(phraseapp.localeNameRegex)
+                    output.set(defaultOutput)
+
+                    description = "Check placeHolder"
+                }
+
+                tasks.create("CheckTask").run {
+                    dependsOn("DuplicateKeysCheckTask")
+                    dependsOn("PluralsCheckTask")
+                    dependsOn("PlaceHolderCheckTask")
+
+                    description = "Check plurals, placeHolder and duplicated keys"
                 }
             }
         }

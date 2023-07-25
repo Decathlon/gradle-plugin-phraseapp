@@ -3,12 +3,12 @@ package phraseapp.repositories.checks
 import phraseapp.internal.platforms.Platform
 import phraseapp.internal.printers.FileOperationImpl
 import phraseapp.network.PhraseAppNetworkDataSource
-import phraseapp.repositories.checks.strategies.PlaceholderStrategy
-import phraseapp.repositories.checks.strategies.PluralsStrategy
-import phraseapp.repositories.checks.strategies.Strategy
+import phraseapp.repositories.checks.CheckType.PLACEHOLDER
+import phraseapp.repositories.checks.CheckType.PLURALS
 
 interface CheckRepository {
-    suspend fun check(strategies: List<Strategy> = arrayListOf(PluralsStrategy(), PlaceholderStrategy()))
+
+    suspend fun check(checkTypes: List<CheckType> = arrayListOf(PLURALS, PLACEHOLDER))
 
     companion object {
         fun newInstance(
