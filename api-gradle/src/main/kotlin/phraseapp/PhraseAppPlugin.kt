@@ -4,7 +4,14 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import phraseapp.internal.platforms.Flutter
 import java.io.File
+import phraseapp.ClearTranslationsTask as DeprecatedClearTranslationsTask
+import phraseapp.DownloadTask as DeprecatedDownloadTask
+import phraseapp.UploadTask as DeprecatedUploadTask
 
+@Deprecated(
+    message = "This plugin is deprecated and will be deleted in the next major version. Consider to use PhrasePlugin instead.",
+    replaceWith = ReplaceWith("phrase.PhrasePlugin")
+)
 class PhraseAppPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.run {
@@ -14,7 +21,7 @@ class PhraseAppPlugin : Plugin<Project> {
                 val defaultOutput = "${buildDir.absolutePath}${File.separator}outputs${File.separator}phraseapp"
                 val targetResFolders = getResFolders(phraseapp)
 
-                tasks.create("phraseappDownload", DownloadTask::class.java).run {
+                tasks.create("phraseappDownload", DeprecatedDownloadTask::class.java).run {
                     baseUrl.set(phraseapp.phraseappBaseUrl.get())
                     projectId.set(phraseapp.projectId.get())
                     authToken.set(phraseapp.authToken.get())
@@ -30,7 +37,7 @@ class PhraseAppPlugin : Plugin<Project> {
                     description = "Download translations from the source set to PhraseApp"
                 }
 
-                tasks.create("phraseappUpload", UploadTask::class.java).run {
+                tasks.create("phraseappUpload", DeprecatedUploadTask::class.java).run {
                     baseUrl.set(phraseapp.phraseappBaseUrl.get())
                     projectId.set(phraseapp.projectId.get())
                     authToken.set(phraseapp.authToken.get())
@@ -41,7 +48,7 @@ class PhraseAppPlugin : Plugin<Project> {
                     description = "Upload default string file from the source set to PhraseApp"
                 }
 
-                tasks.create("phraseappClean", ClearTranslationsTask::class.java).run {
+                tasks.create("phraseappClean", DeprecatedClearTranslationsTask::class.java).run {
                     platform.set(phraseapp.platform.get().toNewPlatform())
                     resFolders.set(targetResFolders)
                     description = "Clear all translations files in the target project"
@@ -54,45 +61,7 @@ class PhraseAppPlugin : Plugin<Project> {
                     authToken.set(phraseapp.authToken)
                     localeNameRegex.set(phraseapp.localeNameRegex)
                     output.set(defaultOutput)
-
-                    description = "Deprecated: Use CheckTask instead. Check plurals and placeholder"
-                }
-
-                tasks.create("DuplicateKeysCheckTask", DuplicateKeysCheckTask::class.java).run {
-                    platform.set(phraseapp.platform.get().toNewPlatform())
-                    resFolders.set(targetResFolders)
-
-                    description = "Check if there are duplicate keys on res folder"
-                }
-
-                tasks.create("PluralsCheckTask", PluralsCheckTask::class.java).run {
-                    baseUrl.set(phraseapp.phraseappBaseUrl)
-                    platform.set(phraseapp.platform.get().toNewPlatform())
-                    projectId.set(phraseapp.projectId)
-                    authToken.set(phraseapp.authToken)
-                    localeNameRegex.set(phraseapp.localeNameRegex)
-                    output.set(defaultOutput)
-
-                    description = "Check plurals"
-                }
-
-                tasks.create("PlaceHolderCheckTask", PlaceHolderCheckTask::class.java).run {
-                    baseUrl.set(phraseapp.phraseappBaseUrl)
-                    platform.set(phraseapp.platform.get().toNewPlatform())
-                    projectId.set(phraseapp.projectId)
-                    authToken.set(phraseapp.authToken)
-                    localeNameRegex.set(phraseapp.localeNameRegex)
-                    output.set(defaultOutput)
-
-                    description = "Check placeHolder"
-                }
-
-                tasks.create("CheckTask").run {
-                    dependsOn("DuplicateKeysCheckTask")
-                    dependsOn("PluralsCheckTask")
-                    dependsOn("PlaceHolderCheckTask")
-
-                    description = "Check plurals, placeHolder and duplicated keys"
+                    description = "This task checks plurals and placeholder only"
                 }
             }
         }

@@ -1,4 +1,4 @@
-package phraseapp
+package phrase.tasks
 
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
