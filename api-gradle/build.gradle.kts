@@ -36,5 +36,9 @@ gradlePlugin {
             id = "com.decathlon.phraseapp"
             implementationClass = "phraseapp.PhraseAppPlugin"
         }
+        create("phrase") {
+            id = "com.decathlon.phrase"
+            implementationClass = "phrase.PhrasePlugin"
+        }
     }
 }

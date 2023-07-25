@@ -1,4 +1,4 @@
-package phraseapp
+package phrase.tasks
 
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
@@ -9,7 +9,6 @@ import org.gradle.api.tasks.TaskAction
 import phraseapp.internal.platforms.Platform
 import phraseapp.repositories.checks.CheckRepository
 import phraseapp.repositories.checks.CheckType.PLACEHOLDER
-import phraseapp.repositories.checks.CheckType.PLURALS
 
 abstract class PlaceHolderCheckTask : DefaultTask() {
     @get:Input

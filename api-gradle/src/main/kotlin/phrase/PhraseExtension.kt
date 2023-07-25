@@ -1,4 +1,4 @@
-package phraseapp
+package phrase
 
 import org.gradle.api.Action
 import org.gradle.api.Project
@@ -9,18 +9,10 @@ import phraseapp.internal.Platform
 import phraseapp.network.*
 import phraseapp.parsers.xml.DEFAULT_IGNORE_COMMENTS
 
-@Deprecated(
-    message = "This plugin is deprecated and will be deleted in the next major version. Consider to use phrase function instead.",
-    replaceWith = ReplaceWith("phrase")
-)
-fun Project.phraseapp(configure: Action<PhraseappPluginExtension>): Unit
-    = extensions.configure("phraseapp", configure)
+fun Project.phrase(configure: Action<PhraseExtension>): Unit
+    = extensions.configure("phrase", configure)
 
-@Deprecated(
-    message = "This extension is deprecated and will be deleted in the next major version. Consider to use PhraseExtension instead.",
-    replaceWith = ReplaceWith("phrase.PhraseExtension")
-)
-abstract class PhraseappPluginExtension {
+abstract class PhraseExtension {
     /**
      * Project id of your PhraseApp project.
      */
@@ -29,17 +21,6 @@ abstract class PhraseappPluginExtension {
      * Authentication token used to communicate with PhraseApp.
      */
     abstract val authToken: Property<String>
-    /**
-     * Target location to print all translations from PhraseApp.
-     */
-    @Deprecated(
-            message = "We are going to replace with resFolders property",
-            replaceWith = ReplaceWith(
-                    expression = "PhraseappPluginExtension.resFolders",
-                    imports = ["phraseapp.PhraseappPluginExtension"]
-            )
-    )
-    abstract val resFolder: Property<String>
     /**
      * Target locations to print all translations from PhraseApp.
      * If you use this property, the plugin will use strings.xml
@@ -64,10 +45,10 @@ abstract class PhraseappPluginExtension {
      */
     abstract val overrideDefaultFile: Property<Boolean>
     /**
-     * Phraseapp base url to consume Phraseapp API.
-     * Optional parameter. Default value: https://api.phraseapp.com/api
+     * Phrase base url to consume Phrase API.
+     * Optional parameter. Default value: https://api.phrase.com/api
      */
-    abstract val phraseappBaseUrl: Property<String>
+    abstract val phraseBaseUrl: Property<String>
     /**
      * If you don't use the upload task, you don't need to fill this property.
      */
@@ -103,12 +84,11 @@ abstract class PhraseappPluginExtension {
     abstract val allowedLocaleCodes: ListProperty<String>
 
     init {
-        resFolder.convention("")
         resFolders.convention(arrayListOf())
         resFoldersMultiStrings.convention(mapOf())
         platform.convention(Platform.ANDROID)
         overrideDefaultFile.convention(DEFAULT_OVERRIDE_DEFAULT_FILE)
-        phraseappBaseUrl.convention(PHRASEAPP_BASEURL)
+        phraseBaseUrl.convention(PHRASEAPP_BASEURL)
         exceptions.convention(DEFAULT_EXCEPTIONS)
         placeholder.convention(DEFAULT_PLACEHOLDER)
         localeNameRegex.convention(DEFAULT_REGEX)
