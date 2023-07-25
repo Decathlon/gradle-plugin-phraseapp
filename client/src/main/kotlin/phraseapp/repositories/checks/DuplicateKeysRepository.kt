@@ -4,7 +4,7 @@ import kotlinx.coroutines.coroutineScope
 import phraseapp.internal.platforms.Platform
 import phraseapp.repositories.operations.helpers.LocalHelper
 
-class DuplicateKeys(
+class DuplicateKeysRepository(
     platform: Platform
 ) {
     private val localHelper = LocalHelper(platform)

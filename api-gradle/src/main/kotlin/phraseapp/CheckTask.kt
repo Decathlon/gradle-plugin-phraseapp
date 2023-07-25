@@ -9,6 +9,7 @@ import org.gradle.api.tasks.TaskAction
 import phraseapp.internal.platforms.Platform
 import phraseapp.repositories.checks.CheckRepository
 
+@Deprecated("This task is deprecated, use tasks.CheckTask task instead")
 abstract class CheckTask : DefaultTask() {
     @get:Input
     abstract val baseUrl: Property<String>
@@ -30,6 +31,7 @@ abstract class CheckTask : DefaultTask() {
 
     @TaskAction
     fun action() = runBlocking {
+        logger.warn("phraseappCheck is deprecated, use CheckTask")
         try {
             CheckRepository
                 .newInstance(

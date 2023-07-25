@@ -1,4 +1,4 @@
-package phraseapp
+package phraseapp.tasks
 
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
@@ -8,10 +8,9 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import phraseapp.internal.platforms.Platform
 import phraseapp.repositories.checks.CheckRepository
-import phraseapp.repositories.checks.CheckType.PLACEHOLDER
 import phraseapp.repositories.checks.CheckType.PLURALS
 
-abstract class PlaceHolderCheckTask : DefaultTask() {
+abstract class PluralsCheckTask : DefaultTask() {
     @get:Input
     abstract val baseUrl: Property<String>
 
@@ -41,11 +40,11 @@ abstract class PlaceHolderCheckTask : DefaultTask() {
                     authToken.get(),
                     projectId.get(),
                     platform.get()
-                ).check(listOf(PLACEHOLDER))
+                ).check(listOf(PLURALS))
 
-            logger.info("You don't have any placeholder error in your translations!")
+            logger.info("You don't have any plurals error in your translations!")
         } catch (error: Throwable) {
-            throw GradleException("You have placeholder errors in your translations", error)
+            throw GradleException("You have plurals errors in your translations", error)
         }
     }
 }

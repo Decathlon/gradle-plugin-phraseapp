@@ -1,4 +1,4 @@
-package phraseapp
+package phraseapp.tasks
 
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
@@ -8,7 +8,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import phraseapp.internal.platforms.Platform
-import phraseapp.repositories.checks.DuplicateKeys
+import phraseapp.repositories.checks.DuplicateKeysRepository
 
 abstract class DuplicateKeysCheckTask : DefaultTask() {
 
@@ -21,7 +21,7 @@ abstract class DuplicateKeysCheckTask : DefaultTask() {
     @TaskAction
     fun checkDuplicateKeys() = runBlocking {
         try {
-            DuplicateKeys(platform.get())
+            DuplicateKeysRepository(platform.get())
                 .check(resFolders.get())
             logger.info("There is no duplicated key")
         } catch (error: Throwable) {
