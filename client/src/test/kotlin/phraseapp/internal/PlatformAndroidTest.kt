@@ -3,24 +3,23 @@ package phraseapp.internal
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import phraseapp.internal.platforms.Android
-import phraseapp.repositories.operations.DefaultType
 import phraseapp.repositories.operations.LanguageType
 import phraseapp.repositories.operations.LocaleType
 
 class PlatformAndroidTest {
     @Test
     fun testGetPathResFolderByDefaultLocale() {
-        assertEquals("values", Android.getResPath(DefaultType))
+        assertEquals("values", Android.getResPath(LanguageType("", isDefault = true)))
     }
 
     @Test
     fun testGetPathResFolderByLocale() {
-        assertEquals("values-fr-rFR", Android.getResPath(LocaleType("fr", "FR")))
+        assertEquals("values-fr-rFR", Android.getResPath(LocaleType("fr", "FR", false)))
     }
 
     @Test
     fun testGetPathResFolderByLanguage() {
-        assertEquals("values-fr", Android.getResPath(LanguageType("fr")))
+        assertEquals("values-fr", Android.getResPath(LanguageType("fr", false)))
     }
 
     @Test

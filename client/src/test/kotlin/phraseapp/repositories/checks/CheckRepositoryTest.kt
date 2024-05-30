@@ -18,7 +18,7 @@ class CheckRepositoryTest {
     @Test
     fun shouldGetFilePrintedInPhraseAppOutputsWhenThereAreErrorsInChecks() = runBlocking {
         val phraseAppNetworkDataSource: PhraseAppNetworkDataSource = mock()
-        whenever(phraseAppNetworkDataSource.downloadAllLocales(any(), any(), any(), any(), any()))
+        whenever(phraseAppNetworkDataSource.downloadAllLocales(any(), any(), any(), any()))
             .thenReturn(
                 mapOf(
                     "en" to LocaleContent(
@@ -63,7 +63,7 @@ es-ES :: PLACEHOLDER :: hello
     @Test
     fun shouldNotGetErrorsWhenThereIsNoErrorInStringsFiles() = runBlocking {
         val phraseAppNetworkDataSource: PhraseAppNetworkDataSource = mock()
-        whenever(phraseAppNetworkDataSource.downloadAllLocales(any(), any(), any(), any(), any()))
+        whenever(phraseAppNetworkDataSource.downloadAllLocales(any(), any(), any(), any()))
             .thenReturn(
                 mapOf(
                     "en" to LocaleContent(
@@ -95,7 +95,7 @@ es-ES :: PLACEHOLDER :: hello
     @Test
     fun shouldNotGetErrorWhenThereAreMissingTranslations() = runBlocking {
         val phraseAppNetworkDataSource: PhraseAppNetworkDataSource = mock()
-        whenever(phraseAppNetworkDataSource.downloadAllLocales(any(), any(), any(), any(), any()))
+        whenever(phraseAppNetworkDataSource.downloadAllLocales(any(), any(), any(), any()))
             .thenReturn(
                 mapOf(
                     "en" to LocaleContent(

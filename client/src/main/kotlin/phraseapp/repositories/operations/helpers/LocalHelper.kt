@@ -6,7 +6,7 @@ import phraseapp.internal.platforms.Platform
 import phraseapp.internal.xml.PluralsTranslation
 import phraseapp.internal.xml.StringTranslation
 import phraseapp.internal.xml.StringsArrayTranslation
-import phraseapp.repositories.operations.DefaultType
+import phraseapp.repositories.operations.LanguageType
 import phraseapp.repositories.operations.ResFolderType
 import java.io.File
 
@@ -46,7 +46,7 @@ class LocalHelper(val platform: Platform) {
         resFolder: String, filenames: List<String>
     ): List<ResourceTranslation> =
         filenames
-            .map { getResFolderFile(resFolder, it, DefaultType) }
+            .map { getResFolderFile(resFolder, it) }
             .map { it.readText().parse(it) }
             .toList()
 
@@ -56,7 +56,7 @@ class LocalHelper(val platform: Platform) {
      */
     private fun getStringsFile(resFolder: String, filenames: List<String>): ResourceTranslation {
         val resources: List<ResourceTranslation> = filenames
-            .map { getResFolderFile(resFolder, it, DefaultType) }
+            .map { getResFolderFile(resFolder, it) }
             .map { it.readText().parse(it) }
             .toList()
         return mergeResourceTranslations(resources)
@@ -66,8 +66,8 @@ class LocalHelper(val platform: Platform) {
      * Build resource folder file from res folder path, filename and the type of the res folder (default or locale).
      * @return File if exist or throw NoSuchFileException
      */
-    private fun getResFolderFile(resFolder: String, filename: String, type: ResFolderType): File {
-        val value = platform.getResPath(type)
+    private fun getResFolderFile(resFolder: String, filename: String): File {
+        val value = platform.getResPath(LanguageType("", true))
         val file = File("${resFolder}${File.separator}${value}${File.separator}${filename}")
         if (file.exists().not()) throw NoSuchFileException(file)
         return file

@@ -1,6 +1,9 @@
 package phraseapp.network
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody.Companion.FORM
 import okhttp3.MultipartBody.Part
@@ -18,21 +21,19 @@ class PhraseAppNetworkDataSourceImpl(
     private val token: String,
     private val projectId: String,
     private val fileFormat: String,
-    private val service: PhraseAppService
+    private val service: PhraseAppService,
 ) : PhraseAppNetworkDataSource {
 
     override suspend fun downloadAllLocales(
-        overrideDefaultFile: Boolean,
         exceptions: Map<String, String>,
         placeHolder: Boolean,
         localeNameRegex: String,
-        allowedLocaleCodes: List<String>
+        allowedLocaleCodes: List<String>,
     ): Map<String, LocaleContent> = coroutineScope {
         val namePattern = Pattern.compile(localeNameRegex)
         val locales = service.getLocales(token, projectId)
             .filter {
-                (it.isDefault.not() or overrideDefaultFile) &&
-                        (allowedLocaleCodes.isEmpty() || allowedLocaleCodes.contains(it.code))
+                (allowedLocaleCodes.isEmpty() || allowedLocaleCodes.contains(it.code))
             }
         val chunked = locales.chunked(CONCURRENT_LIMIT)
         val localesResponse = iterative(chunked, THROTTLING_LIMIT, placeHolder)
@@ -50,7 +51,7 @@ class PhraseAppNetworkDataSourceImpl(
     private suspend fun iterative(
         list: List<List<Locale>>,
         onePerMillis: Long,
-        placeHolder: Boolean
+        placeHolder: Boolean,
     ) = coroutineScope<List<LocaleResponse>> {
         val target = arrayListOf<LocaleResponse>()
         for (item in list) {
@@ -58,7 +59,13 @@ class PhraseAppNetworkDataSourceImpl(
                 item
                     .map { locale ->
                         async {
-                            val file = service.download(token, projectId, locale.id, fileFormat, placeHolder)
+                            val file = service.download(
+                                token,
+                                projectId,
+                                locale.id,
+                                fileFormat,
+                                placeHolder
+                            )
                             return@async LocaleResponse(locale, file.string())
                         }
                     }
