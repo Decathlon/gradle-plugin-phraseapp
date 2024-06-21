@@ -36,7 +36,7 @@ class CheckRepositoryImpl(
     }
 
     private suspend fun check(checkType: CheckType): List<CheckLocaleError> = coroutineScope {
-        val localesContent = phraseAppNetworkDataSource.downloadAllLocales(true, emptyMap(), true, localeRegex)
+        val localesContent = phraseAppNetworkDataSource.downloadAllLocales(emptyMap(), true, localeRegex)
         val defaultContent = localesContent.values.first { it.isDefault }.content.parse(platform.format)
         val targetsContent = localesContent.entries
             .filter { it.value.isDefault.not() }

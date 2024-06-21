@@ -19,7 +19,6 @@ data class LocaleContent(val content: String, val isDefault: Boolean)
 
 interface PhraseAppNetworkDataSource {
     suspend fun downloadAllLocales(
-        overrideDefaultFile: Boolean = DEFAULT_OVERRIDE_DEFAULT_FILE,
         exceptions: Map<String, String> = DEFAULT_EXCEPTIONS,
         placeHolder: Boolean = DEFAULT_PLACEHOLDER,
         localeNameRegex: String = DEFAULT_REGEX,

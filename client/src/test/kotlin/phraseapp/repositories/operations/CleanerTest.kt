@@ -29,7 +29,7 @@ class CleanerTest {
         val resFolderModule1 = "src/test/resources/android" to arrayListOf("strings.xml")
         val resFolderModule2 = "src/test/resources/android-remote" to arrayListOf("strings.xml")
         Cleaner(Android, fileOperation).clean(mapOf(resFolderModule1, resFolderModule2))
-        verify(fileOperation, times(3)).delete(any())
+        verify(fileOperation, times(4)).delete(any())
         verify(fileOperation).delete(File("$rootDir${File.separator}src${File.separator}test${File.separator}resources${File.separator}android${File.separator}values-fr-rFR${File.separator}strings.xml"))
         verify(fileOperation).delete(File("$rootDir${File.separator}src${File.separator}test${File.separator}resources${File.separator}android-remote${File.separator}values-es-rES${File.separator}strings.xml"))
         verify(fileOperation).delete(File("$rootDir${File.separator}src${File.separator}test${File.separator}resources${File.separator}android-remote${File.separator}values-fr-rFR${File.separator}strings.xml"))

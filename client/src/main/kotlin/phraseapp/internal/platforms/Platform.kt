@@ -3,7 +3,6 @@ package phraseapp.internal.platforms
 import phraseapp.internal.xml.ArbPrinterScanner
 import phraseapp.internal.xml.Visitor
 import phraseapp.internal.xml.XmlPrinterScanner
-import phraseapp.repositories.operations.DefaultType
 import phraseapp.repositories.operations.LanguageType
 import phraseapp.repositories.operations.LocaleType
 import phraseapp.repositories.operations.ResFolderType
@@ -32,10 +31,11 @@ object Android : Platform() {
         return defaultStringsFile
     }
 
-    override fun getResPath(type: ResFolderType): String = when (type) {
-        is DefaultType -> "values"
-        is LanguageType -> "values-${type.language.lowercase()}"
-        is LocaleType -> "values-${type.language.lowercase()}-r${type.country.uppercase()}"
+    override fun getResPath(type: ResFolderType): String = when {
+        type.isDefault -> "values"
+        type is LanguageType -> "values-${type.language.lowercase()}"
+        type is LocaleType -> "values-${type.language.lowercase()}-r${type.country.uppercase()}"
+        else -> throw NotImplementedError()
     }
 
     override fun getStringsFilesExceptDefault(resFolder: String): List<File> {
@@ -63,10 +63,11 @@ object iOS : Platform() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getResPath(type: ResFolderType): String = when (type) {
-        is DefaultType -> "Base.lproj"
-        is LanguageType -> "${type.language.lowercase()}.lproj"
-        is LocaleType -> "${type.language.lowercase()}-${type.country.uppercase()}.lproj"
+    override fun getResPath(type: ResFolderType): String = when  {
+        type.isDefault -> "Base.lproj"
+        type is LanguageType -> "${type.language.lowercase()}.lproj"
+        type is LocaleType -> "${type.language.lowercase()}-${type.country.uppercase()}.lproj"
+        else -> throw NotImplementedError()
     }
 
     override fun getStringsFilesExceptDefault(resFolder: String): List<File> {
@@ -90,14 +91,15 @@ object Flutter : Platform() {
     override val format: String
         get() = "xml"
 
-    override fun getFilename(type: ResFolderType): String = when (type) {
-        is DefaultType -> defaultStringsFile
-        is LanguageType -> {
+    override fun getFilename(type: ResFolderType): String = when  {
+        type.isDefault -> defaultStringsFile
+        type is LanguageType -> {
             "strings_${type.language.lowercase()}.arb"
         }
-        is LocaleType -> {
+        type is LocaleType -> {
             "strings_${type.language.lowercase()}_${type.country.uppercase()}.arb"
         }
+        else -> throw NotImplementedError()
     }
 
     override fun getResPath(type: ResFolderType): String = "values"

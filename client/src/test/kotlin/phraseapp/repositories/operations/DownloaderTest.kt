@@ -22,7 +22,9 @@ class DownloaderTest {
         whenever(network.downloadAllLocales()).thenReturn(
             mapOf(
                 "fr-FR" to LocaleContent(File("src/test/resources/android-remote/values-fr-rFR/strings.xml").readText(), false),
-                "es-ES" to LocaleContent(File("src/test/resources/android-remote/values-es-rES/strings.xml").readText(), false)
+                "es-ES" to LocaleContent(File("src/test/resources/android-remote/values-es-rES/strings.xml").readText(), false),
+                "en" to LocaleContent(File("src/test/resources/android-remote/values/strings.xml").readText(), true),
+                "en-GB" to LocaleContent(File("src/test/resources/android-remote/values-en-rGB/strings.xml").readText(), false)
             )
         )
         val fileOperation: FileOperation = mock()
@@ -32,11 +34,16 @@ class DownloaderTest {
         )
         val results = Downloader(Android, "build", fileOperation, network).download(resFolders)
         Assert.assertEquals(2, results.size)
-        verify(fileOperation, times(5)).print(any(), any())
-        verify(fileOperation).print(eq("build/languages.json"), eq("""{"FR":["fr"],"ES":["es"]}"""))
+        verify(fileOperation, times(7)).print(any(), any())
+        verify(fileOperation, times(2)).copy(any(), any())
+        verify(fileOperation).print(eq("build/languages.json"), eq("""{"FR":["fr"],"ES":["es"],"GB":["en"]}"""))
         verify(fileOperation).print(eq("src/test/resources/android/values-fr-rFR/strings.xml"), any())
         verify(fileOperation).print(eq("src/test/resources/android/values-es-rES/strings.xml"), any())
+        verify(fileOperation).print(eq("src/test/resources/android/values-en-rGB/strings.xml"), any())
+        verify(fileOperation).copy(eq("src/test/resources/android/values/strings.xml"), eq("src/test/resources/android/values-en/strings.xml"))
         verify(fileOperation).print(eq("src/test/resources/android-local/values-fr-rFR/strings.xml"), any())
         verify(fileOperation).print(eq("src/test/resources/android-local/values-es-rES/strings.xml"), any())
+        verify(fileOperation).print(eq("src/test/resources/android-local/values-en-rGB/strings.xml"), any())
+        verify(fileOperation).copy(eq("src/test/resources/android-local/values/strings.xml"), eq("src/test/resources/android-local/values-en/strings.xml"))
     }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello From GB!</string>
+    <string name="world">World!</string>
+    <plurals name="worlds">
+        <item quantity="one">Hello World!</item>
+        <item quantity="other">Hello Worlds!</item>
+    </plurals>
+    <plurals name="numberOfSongsAvailable">
+        <item quantity="one">%d song found.</item>
+        <item quantity="other">%d songs found.</item>
+    </plurals>
+</resources>

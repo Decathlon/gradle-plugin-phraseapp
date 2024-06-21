@@ -13,7 +13,13 @@ class PhraseAppNetworkDataSourceTest {
     fun shouldDownloadAllXmlContentsExceptedDefaultLocale() = runBlocking {
         val networkDataSource = PhraseAppNetworkDataSourceImpl("", "", "", service)
         val xmlContents = networkDataSource.downloadAllLocales()
-        assertEquals(2, xmlContents.size)
+        assertEquals(3, xmlContents.size)
+        assertTrue(xmlContents.containsKey("en"))
+        assertTrue(xmlContents["en"]!!.isDefault)
+        assertEquals(
+            File("src/test/resources/android-remote/values/strings.xml").readText(),
+            xmlContents["en"]?.content
+        )
         assertTrue(xmlContents.containsKey("es-ES"))
         assertFalse(xmlContents["es-ES"]!!.isDefault)
         assertEquals(
@@ -31,7 +37,7 @@ class PhraseAppNetworkDataSourceTest {
     @Test
     fun shouldDownloadAllXmlContentsIncludingDefaultLocale() = runBlocking {
         val networkDataSource = PhraseAppNetworkDataSourceImpl("", "", "", service)
-        val xmlContents = networkDataSource.downloadAllLocales(overrideDefaultFile = true)
+        val xmlContents = networkDataSource.downloadAllLocales()
         assertEquals(3, xmlContents.size)
         assertTrue(xmlContents.containsKey("en"))
         assertTrue(xmlContents["en"]!!.isDefault)
@@ -56,7 +62,7 @@ class PhraseAppNetworkDataSourceTest {
     @Test
     fun shouldSkipLocaleWhenLocaleDoNotMatchRegexApplyOnLocaleName() = runBlocking {
         val networkDataSource = PhraseAppNetworkDataSourceImpl("", "", "", service)
-        val xmlContents = networkDataSource.downloadAllLocales(overrideDefaultFile = true, localeNameRegex = "")
+        val xmlContents = networkDataSource.downloadAllLocales(localeNameRegex = "")
         assertEquals(2, xmlContents.size)
         assertTrue(xmlContents.containsKey("en"))
         assertTrue(xmlContents.containsKey("fr-FR"))
@@ -74,9 +80,11 @@ class PhraseAppNetworkDataSourceTest {
     fun shouldRedirectLocaleToNewLocaleNameWhenItIsPresentInExceptionList() = runBlocking {
         val networkDataSource = PhraseAppNetworkDataSourceImpl("", "", "", service)
         val xmlContents = networkDataSource.downloadAllLocales(exceptions = mapOf("es-ES" to "ca-ES"))
-        assertEquals(2, xmlContents.size)
+        assertEquals(3, xmlContents.size)
         assertFalse(xmlContents.containsKey("es-ES"))
         assertTrue(xmlContents.containsKey("ca-ES"))
+        assertTrue(xmlContents.containsKey("en"))
+        assertTrue(xmlContents.containsKey("fr-FR"))
     }
 
     @Test

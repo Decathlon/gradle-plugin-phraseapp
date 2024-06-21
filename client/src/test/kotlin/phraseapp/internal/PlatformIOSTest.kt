@@ -3,24 +3,23 @@ package phraseapp.internal
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import phraseapp.internal.platforms.iOS
-import phraseapp.repositories.operations.DefaultType
 import phraseapp.repositories.operations.LanguageType
 import phraseapp.repositories.operations.LocaleType
 
 class PlatformIOSTest {
     @Test
     fun testGetPathResFolderByDefaultLocale() {
-        assertEquals("Base.lproj", iOS.getResPath(DefaultType))
+        assertEquals("Base.lproj", iOS.getResPath(LanguageType("", isDefault = true)))
     }
 
     @Test
     fun testGetPathResFolderByLocale() {
-        assertEquals("fr-FR.lproj", iOS.getResPath(LocaleType("fr", "FR")))
+        assertEquals("fr-FR.lproj", iOS.getResPath(LocaleType("fr", "FR", false)))
     }
 
     @Test
     fun testGetPathResFolderByLanguage() {
-        assertEquals("fr.lproj", iOS.getResPath(LanguageType("fr")))
+        assertEquals("fr.lproj", iOS.getResPath(LanguageType("fr",false)))
     }
 
     @Test

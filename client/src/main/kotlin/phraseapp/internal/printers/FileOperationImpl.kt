@@ -8,6 +8,12 @@ class FileOperationImpl : FileOperation {
         content.writeTo(path)
     }
 
+    override fun copy(path: String, newPath: String){
+        val file = File(path)
+        val duplicateFile = File(newPath)
+        file.copyTo(duplicateFile, overwrite = true)
+    }
+
     override fun delete(file: File) {
         if (file.parentFile.listFiles()?.size == 1 && file.exists()) {
             file.parentFile.deleteRecursively()
