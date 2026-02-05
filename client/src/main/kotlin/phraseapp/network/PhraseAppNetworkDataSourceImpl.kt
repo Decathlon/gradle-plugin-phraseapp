@@ -59,6 +59,7 @@ class PhraseAppNetworkDataSourceImpl(
                 item
                     .map { locale ->
                         async {
+                            println("[PhraseAppNetwork] Downloading locale: id=${locale.id}, code=${locale.code}, name=${locale.name}, format=$fileFormat, placeHolder=$placeHolder")
                             val file = service.download(
                                 token,
                                 projectId,
@@ -77,6 +78,7 @@ class PhraseAppNetworkDataSourceImpl(
     }
 
     override suspend fun upload(localeId: String, filePath: String) = coroutineScope {
+        println("[PhraseAppNetwork] upload called with params: localeId=$localeId, filePath=$filePath")
         val file = File(filePath)
         val requestFile = file.asRequestBody("text/plain".toMediaTypeOrNull())
         val body = Part.createFormData("file", file.name, requestFile)
@@ -85,6 +87,7 @@ class PhraseAppNetworkDataSourceImpl(
         val updateTranslation = "true".toRequestBody(FORM)
         val updateDescription = "true".toRequestBody(FORM)
         val skipUploadTag = "true".toRequestBody(FORM)
+        println("[PhraseAppNetwork] Uploading: localeId=$localeId, fileName=${file.name}, size=${file.length()} bytes, format=$fileFormat")
         service.upload(
             token,
             projectId,
@@ -95,6 +98,7 @@ class PhraseAppNetworkDataSourceImpl(
             updateDescription,
             skipUploadTag
         )
+        println("[PhraseAppNetwork] Upload finished: localeId=$localeId, fileName=${file.name}")
         return@coroutineScope
     }
 }

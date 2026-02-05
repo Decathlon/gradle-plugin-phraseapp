@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.8.21"
+kotlin = "1.9.22"
 kotlinx-coroutines = "1.7.1"
 google-gson = "2.10.1"
 square-okhttp = "4.11.0"
@@ -9,7 +9,7 @@ junit = "4.13.2"
 assertk = "0.9"
 vanniktech-maven-publish = "0.25.1"
 sonarqube = "4.3.0.3225"
-jacoco = "0.8.7"
+jacoco = "0.8.11"
 
 [libraries]
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }

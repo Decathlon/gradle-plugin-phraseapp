@@ -21,21 +21,17 @@ dependencies {
 
 tasks.withType<KotlinCompile>() {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 gradlePlugin {
     plugins {
-        create("publishing") {
-            id = "com.decathlon.phraseapp"
-            implementationClass = "phraseapp.PhraseAppPlugin"
-        }
         create("phrase") {
             id = "com.decathlon.phrase"
             implementationClass = "phrase.PhrasePlugin"
