@@ -62,6 +62,7 @@ abstract class DownloadTask : DefaultTask() {
     @TaskAction
     fun download() = runBlocking {
         try {
+            println("[PhraseAppNetwork] Starting download task...")
             val network = PhraseAppNetworkDataSource.newInstance(
                 baseUrl.get(),
                 authToken.get(),
