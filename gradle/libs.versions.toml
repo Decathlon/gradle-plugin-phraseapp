@@ -8,7 +8,6 @@ mockito-kotlin = "5.0.0"
 junit = "4.13.2"
 assertk = "0.9"
 vanniktech-maven-publish = "0.25.1"
-sonarqube = "4.3.0.3225"
 jacoco = "0.8.11"
 
 [libraries]
@@ -32,4 +31,3 @@ square-okhttp3 = ["square-okhttp", "square-okhttp-logging-interceptor"]
 square-retrofit = ["square-retrofit", "square-retrofit-converter-gson"]
 
 [plugins]
-sonarqube-gradle = { id = "org.sonarqube", version.ref = "sonarqube" }

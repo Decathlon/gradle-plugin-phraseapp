@@ -4,7 +4,6 @@ plugins {
     id("kotlin")
     id("jacoco")
     id("com.vanniktech.maven.publish")
-    alias(libs.plugins.sonarqube.gradle)
 }
 
 dependencies {
@@ -30,12 +29,6 @@ tasks.withType<KotlinCompile>() {
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-}
-
-sonar {
-    properties {
-        property("sonar.sources", "src/main/kotlin")
-    }
 }
 
 jacoco {
