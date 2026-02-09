@@ -3,6 +3,7 @@ package phrase
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.TaskProvider
 import phraseapp.internal.platforms.Flutter
 import phrase.tasks.ClearTranslationsTask
 import phrase.tasks.DownloadTask
@@ -19,74 +20,73 @@ class PhrasePlugin : Plugin<Project> {
             afterEvaluate {
                 val phrase: PhraseExtension = extensions.getByType(PhraseExtension::class.java)
                 val defaultOutput =
-                    "${buildDir.absolutePath}${File.separator}outputs${File.separator}phrase"
+                    "${project.layout.buildDirectory.get().asFile}${File.separator}outputs${File.separator}phrase"
                 val targetResFolders = getResFolders(phrase)
 
-                tasks.create("phraseDownload", DownloadTask::class.java).run {
-                    baseUrl.set(phrase.phraseBaseUrl.get())
-                    projectId.set(phrase.projectId.get())
-                    authToken.set(phrase.authToken.get())
-                    resFolders.set(targetResFolders)
-                    platform.set(phrase.platform.get().toNewPlatform())
-                    output.set(phrase.outputLocation.getOrElse(defaultOutput))
-                    overrideDefaultFile.set(phrase.overrideDefaultFile.get())
-                    exceptions.set(phrase.exceptions.get())
-                    placeholder.set(phrase.placeholder.get())
-                    localeNameRegex.set(phrase.localeNameRegex.get())
-                    ignoreComments.set(phrase.ignoreComments.get())
-                    allowedLocaleCodes.set(phrase.allowedLocaleCodes.get())
-                    description = "Download translations from the source set to PhraseApp"
+                tasks.register("phraseDownload", DownloadTask::class.java) { task ->
+                    task.baseUrl.set(phrase.phraseBaseUrl.get())
+                    task.projectId.set(phrase.projectId.get())
+                    task.authToken.set(phrase.authToken.get())
+                    task.resFolders.set(targetResFolders)
+                    task.platform.set(phrase.platform.get().toNewPlatform())
+                    task.output.set(phrase.outputLocation.getOrElse(defaultOutput))
+                    task.overrideDefaultFile.set(phrase.overrideDefaultFile.get())
+                    task.exceptions.set(phrase.exceptions.get())
+                    task.placeholder.set(phrase.placeholder.get())
+                    task.localeNameRegex.set(phrase.localeNameRegex.get())
+                    task.ignoreComments.set(phrase.ignoreComments.get())
+                    task.allowedLocaleCodes.set(phrase.allowedLocaleCodes.get())
+                    task.description = "Download translations from the source set to PhraseApp"
                 }
 
-                tasks.create("phraseUpload", UploadTask::class.java).run {
-                    baseUrl.set(phrase.phraseBaseUrl.get())
-                    projectId.set(phrase.projectId.get())
-                    authToken.set(phrase.authToken.get())
-                    mainLocaleId.set(phrase.mainLocaleId.getOrElse(""))
-                    platform.set(phrase.platform.get().toNewPlatform())
-                    output.set(defaultOutput)
-                    resFolders.set(targetResFolders)
-                    description = "Upload default string file from the source set to PhraseApp"
+                tasks.register("phraseUpload", UploadTask::class.java) { task ->
+                    task.baseUrl.set(phrase.phraseBaseUrl.get())
+                    task.projectId.set(phrase.projectId.get())
+                    task.authToken.set(phrase.authToken.get())
+                    task.mainLocaleId.set(phrase.mainLocaleId.getOrElse(""))
+                    task.platform.set(phrase.platform.get().toNewPlatform())
+                    task.output.set(defaultOutput)
+                    task.resFolders.set(targetResFolders)
+                    task.description = "Upload default string file from the source set to PhraseApp"
                 }
 
-                tasks.create("phraseClean", ClearTranslationsTask::class.java).run {
-                    platform.set(phrase.platform.get().toNewPlatform())
-                    resFolders.set(targetResFolders)
-                    description = "Clear all translations files in the target project"
+                tasks.register("phraseClean", ClearTranslationsTask::class.java) { task ->
+                    task.platform.set(phrase.platform.get().toNewPlatform())
+                    task.resFolders.set(targetResFolders)
+                    task.description = "Clear all translations files in the target project"
                 }
 
-                tasks.create("phraseDuplicateKeysCheck", DuplicateKeysCheckTask::class.java).run {
-                    platform.set(phrase.platform.get().toNewPlatform())
-                    resFolders.set(targetResFolders)
-                    description = "Check if there are duplicate keys in res folder"
+                val duplicateKeysCheckTask = tasks.register("phraseDuplicateKeysCheck", DuplicateKeysCheckTask::class.java) { task ->
+                    task.platform.set(phrase.platform.get().toNewPlatform())
+                    task.resFolders.set(targetResFolders)
+                    task.description = "Check if there are duplicate keys in res folder"
                 }
 
-                tasks.create("phrasePluralsCheck", PluralsCheckTask::class.java).run {
-                    baseUrl.set(phrase.phraseBaseUrl)
-                    platform.set(phrase.platform.get().toNewPlatform())
-                    projectId.set(phrase.projectId)
-                    authToken.set(phrase.authToken)
-                    localeNameRegex.set(phrase.localeNameRegex)
-                    output.set(defaultOutput)
-                    description = "Check plural strings are well formatted"
+                val pluralsCheckTask = tasks.register("phrasePluralsCheck", PluralsCheckTask::class.java) { task ->
+                    task.baseUrl.set(phrase.phraseBaseUrl)
+                    task.platform.set(phrase.platform.get().toNewPlatform())
+                    task.projectId.set(phrase.projectId)
+                    task.authToken.set(phrase.authToken)
+                    task.localeNameRegex.set(phrase.localeNameRegex)
+                    task.output.set(defaultOutput)
+                    task.description = "Check plural strings are well formatted"
                 }
 
-                tasks.create("phrasePlaceHolderCheck", PlaceHolderCheckTask::class.java).run {
-                    baseUrl.set(phrase.phraseBaseUrl)
-                    platform.set(phrase.platform.get().toNewPlatform())
-                    projectId.set(phrase.projectId)
-                    authToken.set(phrase.authToken)
-                    localeNameRegex.set(phrase.localeNameRegex)
-                    output.set(defaultOutput)
-                    description =
-                        "Check placeholders aren't removed in other locale string resource folders"
+                val placeHolderCheckTask = tasks.register("phrasePlaceHolderCheck", PlaceHolderCheckTask::class.java) { task ->
+                    task.baseUrl.set(phrase.phraseBaseUrl)
+                    task.platform.set(phrase.platform.get().toNewPlatform())
+                    task.projectId.set(phrase.projectId)
+                    task.authToken.set(phrase.authToken)
+                    task.localeNameRegex.set(phrase.localeNameRegex)
+                    task.output.set(defaultOutput)
+                    task.description = "Check placeholders aren't removed in other locale string resource folders"
                 }
 
-                tasks.create("phraseCheck").run {
-                    dependsOn("phraseDuplicateKeysCheck")
-                    dependsOn("phrasePluralsCheck")
-                    dependsOn("phrasePlaceHolderCheck")
-                    description = "Apply all phrase checks"
+                tasks.register("phraseCheck") { task ->
+                    task.dependsOn(duplicateKeysCheckTask)
+                    task.dependsOn(pluralsCheckTask)
+                    task.dependsOn(placeHolderCheckTask)
+                    task.description = "Apply all phrase checks"
                 }
             }
         }
