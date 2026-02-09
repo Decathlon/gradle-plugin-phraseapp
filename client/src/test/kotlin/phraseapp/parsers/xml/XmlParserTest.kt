@@ -1,5 +1,6 @@
 package phraseapp.parsers.xml
 
+import assertk.assertThat
 import assertk.assertions.containsAll
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
@@ -16,19 +17,19 @@ class XmlParserTest {
 """.trimIndent()
         val document = XmlParser(xml).document
         val nodes = document["resources"]
-        assertk.assert(nodes.size).isEqualTo(expected = 1)
+        assertThat(nodes.size).isEqualTo(1)
 
         val resourcesNode = nodes[0]
-        assertk.assert(resourcesNode.isArray()).isTrue()
-        assertk.assert(resourcesNode.childs.size).isEqualTo(expected = 1)
+        assertThat(resourcesNode.isArray()).isTrue()
+        assertThat(resourcesNode.childs.size).isEqualTo(1)
 
         val string = resourcesNode.childs[0]
-        assertk.assert(string.isElement()).isTrue()
+        assertThat(string.isElement()).isTrue()
 
         val attributes = string.attributes
-        assertk.assert(attributes["name"]).isEqualTo("hello")
+        assertThat(attributes["name"]).isEqualTo("hello")
 
-        assertk.assert(string.textContent).isEqualTo("Hello, World!")
+        assertThat(string.textContent).isEqualTo("Hello, World!")
     }
 
     @Test
@@ -40,8 +41,8 @@ class XmlParserTest {
 """.trimIndent()
         val document = XmlParser(xml).document
         val attributes = document["resources"][0].childs[0].attributes
-        assertk.assert(attributes.getAll()).containsAll(
-                "name" to "hello", "key" to "value", "toto" to "tata"
+        assertThat(attributes.getAll()).containsAll(
+            "name" to "hello", "key" to "value", "toto" to "tata"
         )
     }
 
@@ -55,7 +56,7 @@ class XmlParserTest {
 """.trimIndent()
         val document = XmlParser(xml).document
         val string = document["resources"][0].childs[0]
-        assertk.assert(string.comment).isEqualTo("Hello, World!")
+        assertThat(string.comment).isEqualTo("Hello, World!")
     }
 
     @Test
@@ -68,7 +69,7 @@ class XmlParserTest {
 """.trimIndent()
         val document = XmlParser(xml, ignoreComments = true).document
         val string = document["resources"][0].childs[0]
-        assertk.assert(string.comment).isNull()
+        assertThat(string.comment).isNull()
     }
 
     @Test
@@ -80,14 +81,14 @@ class XmlParserTest {
 """.trimIndent()
         val document = XmlParser(xml).document
         val nodes = document["resources"]
-        assertk.assert(nodes.size).isEqualTo(expected = 1)
+        assertThat(nodes.size).isEqualTo(1)
 
         val resourcesNode = nodes[0]
-        assertk.assert(resourcesNode.isArray()).isTrue()
-        assertk.assert(resourcesNode.childs.size).isEqualTo(expected = 1)
+        assertThat(resourcesNode.isArray()).isTrue()
+        assertThat(resourcesNode.childs.size).isEqualTo(1)
 
         val string = resourcesNode.childs[0]
-        assertk.assert(string.isElement()).isTrue()
-        assertk.assert(string.text).isEqualTo("Click&Collect")
+        assertThat(string.isElement()).isTrue()
+        assertThat(string.text).isEqualTo("Click&Collect")
     }
 }

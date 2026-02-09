@@ -12,9 +12,9 @@ dependencies {
     implementation(project(":client"))
 }
 
-tasks.withType<KotlinCompile>() {
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
 
