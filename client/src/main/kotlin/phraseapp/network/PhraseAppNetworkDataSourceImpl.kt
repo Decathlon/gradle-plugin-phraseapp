@@ -87,7 +87,7 @@ class PhraseAppNetworkDataSourceImpl(
         val updateTranslation = "true".toRequestBody(FORM)
         val updateDescription = "true".toRequestBody(FORM)
         val skipUploadTag = "true".toRequestBody(FORM)
-        println("[PhraseAppNetwork] Uploading: localeId=$localeId, fileName=${file.name}, size=${file.length()} bytes, format=$fileFormat")
+        println("[PhraseAppNetwork] Uploading: localeId=$localeId, fileName=${file.name}, size=${file.length()} bytes")
         service.upload(
             token,
             projectId,
