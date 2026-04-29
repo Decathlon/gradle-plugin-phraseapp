@@ -36,6 +36,7 @@ class PhrasePlugin : Plugin<Project> {
                     task.localeNameRegex.set(phrase.localeNameRegex.get())
                     task.ignoreComments.set(phrase.ignoreComments.get())
                     task.allowedLocaleCodes.set(phrase.allowedLocaleCodes.get())
+                    task.maxConcurrentDownloads.set(phrase.maxConcurrentDownloads.get())
                     task.description = "Download translations from the source set to PhraseApp"
                 }
 

@@ -14,6 +14,7 @@ val DEFAULT_EXCEPTIONS: Map<String, String> = emptyMap()
 const val DEFAULT_OVERRIDE_DEFAULT_FILE = false
 val DEFAULT_ALLOWED_LOCALE_CODES: List<String> = emptyList()
 const val PHRASEAPP_BASEURL = "https://api.phrase.com/api/"
+const val DEFAULT_MAX_CONCURRENT_DOWNLOADS = 1
 
 data class LocaleContent(val content: String, val isDefault: Boolean)
 
@@ -28,12 +29,18 @@ interface PhraseAppNetworkDataSource {
     suspend fun upload(localeId: String, filePath: String)
 
     companion object {
-        fun newInstance(baseUrl: String, token: String, projectId: String, fileFormat: String)
-                : PhraseAppNetworkDataSource {
+        fun newInstance(
+            baseUrl: String,
+            token: String,
+            projectId: String,
+            fileFormat: String,
+            maxConcurrentDownloads: Int = DEFAULT_MAX_CONCURRENT_DOWNLOADS
+        ): PhraseAppNetworkDataSource {
             val gson = GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create()
             val client = OkHttpClient.Builder()
+                .addInterceptor(RateLimitInterceptor())
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .hostnameVerifier { _, _ -> true }
                 .build()
@@ -43,7 +50,11 @@ interface PhraseAppNetworkDataSource {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
             return PhraseAppNetworkDataSourceImpl(
-                token, projectId, fileFormat, retrofit.create(PhraseAppService::class.java)
+                token,
+                projectId,
+                fileFormat,
+                retrofit.create(PhraseAppService::class.java),
+                maxConcurrentDownloads
             )
         }
     }

@@ -51,12 +51,16 @@ abstract class DownloadTask : DefaultTask() {
     @get:Input
     abstract val allowedLocaleCodes: ListProperty<String>
 
+    @get:Input
+    abstract val maxConcurrentDownloads: Property<Int>
+
     init {
         overrideDefaultFile.convention(false)
         exceptions.convention(emptyMap())
         placeholder.convention(false)
         ignoreComments.convention(false)
         allowedLocaleCodes.convention(emptyList())
+        maxConcurrentDownloads.convention(1)
     }
 
     @TaskAction
@@ -67,7 +71,8 @@ abstract class DownloadTask : DefaultTask() {
                 baseUrl.get(),
                 authToken.get(),
                 projectId.get(),
-                platform.get().format
+                platform.get().format,
+                maxConcurrentDownloads.get()
             )
             val fileOperation: FileOperation = FileOperationImpl()
             Downloader(platform.get(), output.get(), fileOperation, network)

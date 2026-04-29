@@ -82,6 +82,12 @@ abstract class PhraseExtension {
      * For example: ['cs-CZ', 'fr-FR', 'de-DE']
      */
     abstract val allowedLocaleCodes: ListProperty<String>
+    /**
+     * Maximum number of concurrent download requests sent to the Phrase API.
+     * Lowering this value reduces the risk of hitting Phrase's concurrent request cap
+     * (HTTP 429) when several CI builds run in parallel. Default: 1.
+     */
+    abstract val maxConcurrentDownloads: Property<Int>
 
     init {
         resFolders.convention(arrayListOf())
@@ -94,5 +100,6 @@ abstract class PhraseExtension {
         localeNameRegex.convention(DEFAULT_REGEX)
         ignoreComments.convention(DEFAULT_IGNORE_COMMENTS)
         allowedLocaleCodes.convention(DEFAULT_ALLOWED_LOCALE_CODES)
+        maxConcurrentDownloads.convention(DEFAULT_MAX_CONCURRENT_DOWNLOADS)
     }
 }

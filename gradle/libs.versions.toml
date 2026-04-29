@@ -18,6 +18,8 @@ google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "go
 square-okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "square-okhttp" }
 square-okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 square-okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
+square-okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 square-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "square-retrofit" }
 square-retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "square-retrofit" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
