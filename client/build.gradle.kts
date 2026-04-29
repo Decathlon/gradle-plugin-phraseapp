@@ -18,6 +18,8 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.assertk)
     testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.square.okhttp.mockwebserver)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

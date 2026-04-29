@@ -3,7 +3,8 @@ package phraseapp.network
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody.Companion.FORM
 import okhttp3.MultipartBody.Part
@@ -14,15 +15,16 @@ import java.util.regex.Pattern
 
 private class LocaleResponse(val locale: Locale, val content: String)
 
-const val CONCURRENT_LIMIT = 4
-const val THROTTLING_LIMIT = 500L
-
 class PhraseAppNetworkDataSourceImpl(
     private val token: String,
     private val projectId: String,
     private val fileFormat: String,
     private val service: PhraseAppService,
+    maxConcurrentDownloads: Int = DEFAULT_MAX_CONCURRENT_DOWNLOADS,
 ) : PhraseAppNetworkDataSource {
+
+    private val concurrencyLimit = maxConcurrentDownloads.coerceAtLeast(1)
+    private val semaphore = Semaphore(concurrencyLimit)
 
     override suspend fun downloadAllLocales(
         exceptions: Map<String, String>,
@@ -35,8 +37,32 @@ class PhraseAppNetworkDataSourceImpl(
             .filter {
                 (allowedLocaleCodes.isEmpty() || allowedLocaleCodes.contains(it.code))
             }
-        val chunked = locales.chunked(CONCURRENT_LIMIT)
-        val localesResponse = iterative(chunked, THROTTLING_LIMIT, placeHolder)
+        println("[PhraseAppNetwork] Downloading ${locales.size} locale(s) with concurrency=$concurrencyLimit")
+        val localesResponse = arrayListOf<LocaleResponse>()
+
+        // Process locales in chunks to avoid creating one coroutine per locale at once.
+        // This keeps roughly `concurrencyLimit` active coroutines and reduces memory/overhead.
+        for (chunk in locales.chunked(concurrencyLimit)) {
+            val chunkResults = chunk
+                .map { locale ->
+                    async {
+                        semaphore.withPermit {
+                            println("[PhraseAppNetwork] Downloading locale: id=${locale.id}, code=${locale.code}, name=${locale.name}, format=$fileFormat, placeHolder=$placeHolder")
+                            val file = service.download(
+                                token,
+                                projectId,
+                                locale.id,
+                                fileFormat,
+                                placeHolder
+                            )
+                            LocaleResponse(locale, file.string())
+                        }
+                    }
+                }
+                .awaitAll()
+
+            localesResponse.addAll(chunkResults)
+        }
         return@coroutineScope localesResponse
             .associate {
                 val phraseAppLocale = it.locale
@@ -46,35 +72,6 @@ class PhraseAppNetworkDataSourceImpl(
                 val key = exceptions.getOrDefault(code, code)
                 key to LocaleContent(it.content, it.locale.isDefault)
             }
-    }
-
-    private suspend fun iterative(
-        list: List<List<Locale>>,
-        onePerMillis: Long,
-        placeHolder: Boolean,
-    ) = coroutineScope<List<LocaleResponse>> {
-        val target = arrayListOf<LocaleResponse>()
-        for (item in list) {
-            target.addAll(
-                item
-                    .map { locale ->
-                        async {
-                            println("[PhraseAppNetwork] Downloading locale: id=${locale.id}, code=${locale.code}, name=${locale.name}, format=$fileFormat, placeHolder=$placeHolder")
-                            val file = service.download(
-                                token,
-                                projectId,
-                                locale.id,
-                                fileFormat,
-                                placeHolder
-                            )
-                            return@async LocaleResponse(locale, file.string())
-                        }
-                    }
-                    .awaitAll()
-            )
-            delay(onePerMillis)
-        }
-        return@coroutineScope target
     }
 
     override suspend fun upload(localeId: String, filePath: String) = coroutineScope {
